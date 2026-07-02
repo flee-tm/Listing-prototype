@@ -87,15 +87,15 @@
   /* cosa è incluso */
   .pv-inc-h { font-size: 16px; font-weight: 700; color: var(--ottanio-flee); }
   .pv-cov { display: flex; flex-direction: column; gap: 4px; }
-  .pv-cov-top { display: flex; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
-  .pv-cov-top .icon { width: 20px; height: 20px; flex-shrink: 0; color: var(--ottanio-flee); }
+  .pv-cov-top { display: flex; align-items: flex-start; gap: 8px; }
+  .pv-cov-top .icon { width: 20px; height: 20px; flex-shrink: 0; margin-top: 1px; color: var(--ottanio-flee); }
   .pv-cov-top .icon img { width: 100%; height: 100%; object-fit: contain; }
-  .pv-cov-top .t { flex: 1 1 auto; min-width: 0; font-size: 15px; font-weight: 500; color: var(--ottanio-flee); }
-  .pv-partner { align-self: center; }
-  .pv-partner { font-size: 12px; font-weight: 500; padding: 1px 5px; border-radius: 4px; }
+  .pv-cov-txt { flex: 1; min-width: 0; font-size: 15px; font-weight: 500; line-height: 1.35; color: var(--ottanio-flee); }
+  .pv-partner { display: inline-block; margin-left: 6px; font-size: 11px; font-weight: 600; line-height: 1.5;
+    padding: 0 6px; border-radius: 4px; vertical-align: middle; white-space: nowrap; }
   .pv-partner.red { background: #c21a17; color: #f3f6f7; }
   .pv-partner.grey { background: #c9d5da; color: #04475c; }
-  .pv-cov-sub { font-size: 12px; color: var(--ottanio-flee); padding-left: 28px; }
+  .pv-cov-sub { font-size: 12px; color: var(--text-subtle, #5b747f); padding-left: 28px; }
   .pv-srv { display: flex; align-items: center; gap: 12px; }
   .pv-srv .icon { width: 20px; height: 20px; flex-shrink: 0; color: var(--ottanio-flee); }
   .pv-srv .icon img { width: 100%; height: 100%; object-fit: contain; }
@@ -367,7 +367,7 @@
     /* ===== Cosa è incluso ===== */
     document.getElementById('pv-cover').innerHTML = PPU_COVER.map(([ic, t, fr, partner, tone]) =>
       `<div class="pv-cov">
-        <div class="pv-cov-top"><span class="icon">${ic}</span><span class="t">${t}</span>${partner ? `<span class="pv-partner ${tone}">${partner}</span>` : ''}</div>
+        <div class="pv-cov-top"><span class="icon">${ic}</span><p class="pv-cov-txt">${t}${partner ? `<span class="pv-partner ${tone}">${partner}</span>` : ''}</p></div>
         ${fr ? `<p class="pv-cov-sub">${fr}</p>` : ''}
       </div>`).join('');
     document.getElementById('pv-servizi').innerHTML = PPU_SERVIZI.map(([ic, t]) =>
