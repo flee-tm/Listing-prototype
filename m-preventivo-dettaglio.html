@@ -259,7 +259,7 @@
   <script>
   (function () {
     MF.renderChrome();
-    const { carById, kindOf, pricing, nf, eur0, I } = MF;
+    const { carById, kindOf, pricing, nf, eur0, money, monthly, I } = MF;
     const params = new URLSearchParams(location.search);
     const car = carById(params.get('id')) || MF.cars[0];
     const kind = kindOf(car);
@@ -378,8 +378,8 @@
     /* ===== La tua rata Flee ===== */
     const unit = (u, cls) => `<div class="pv-unit"><span class="u"><b>€</b>${u}</span><span class="iva">iva incl.</span></div>`;
     const priceLine = (mensile, perKm) => {
-      let h = `<span class="num">${nf(mensile, 2)}</span>${unit('/mese')}`;
-      if (perKm != null) h += `<span class="plus">+</span><span class="num">${nf(perKm, 3)}</span>${unit('/km')}`;
+      let h = `<span class="num">${monthly(mensile)}</span>${unit('/mese')}`;
+      if (perKm != null) h += `<span class="plus">+</span><span class="num">${money(perKm)}</span>${unit('/km')}`;
       return `<div class="pv-price">${h}</div>`;
     };
     let rataHTML = `<div class="pv-rata"><div><p class="lbl">Rata mensile:</p>${priceLine(pr.monthly, pr.perKm)}</div>`;
@@ -394,8 +394,8 @@
       const hint = document.getElementById('pv-hint');
       hint.hidden = false;
       document.getElementById('pv-hint-ico').innerHTML = I.bulb;
-      document.getElementById('pv-maxppu').textContent = nf(pr.monthly + pr.perKm * 2000, 2);
-      document.getElementById('pv-flat').textContent = nf(car.priceFlat, 2);
+      document.getElementById('pv-maxppu').textContent = monthly(pr.monthly + pr.perKm * 2000);
+      document.getElementById('pv-flat').textContent = monthly(car.priceFlat);
     }
     document.getElementById('pv-next-ico').innerHTML = I.bulb;
 
