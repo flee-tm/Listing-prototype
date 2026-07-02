@@ -1,0 +1,109 @@
+/* ===================================================================
+   Flee — estilos compartidos (header, footer, tokens, componenti base)
+   Usato da: index.html, catalogo.html, flee-scheda-veicolo.html
+   =================================================================== */
+:root {
+  --green-flee: #20E775;
+  --green-flee-hover: #4FEA95;
+  --green-050: #EFFEF5;
+  --ottanio-flee: #045168;
+  --ottanio-700: #1D6277;
+  --secondary-900: #033342;
+  --secondary-100: #F3F8FA;
+  --secondary-200: #E6EEF0;
+  --neutral-280: #E3E3E3;
+  --neutral-text: #045168;
+  --promo-pink: #B60088;
+  --accent-bg: #EDD6E4;
+  --toggle-off: #CCDCE0;
+  --white: #ffffff;
+  --maxw: 1200px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  color: var(--ottanio-flee);
+  background: var(--white);
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; color: inherit; background: none; border: none; cursor: pointer; }
+img { display: block; max-width: 100%; }
+.icon { display: inline-block; flex-shrink: 0; color: currentColor; line-height: 0; }
+.icon svg { display: block; width: 100%; height: 100%; }
+.container { max-width: var(--maxw); margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); }
+
+/* ---------------- Buttons ---------------- */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border-radius: 9999px; font-weight: 700; font-size: 16px; line-height: 1;
+  padding: 16px 32px; transition: background .2s ease, color .2s ease, border-color .2s ease; cursor: pointer; }
+.btn-primary { background: var(--green-flee); color: var(--ottanio-flee); }
+.btn-primary:hover { background: var(--green-flee-hover); }
+.btn-ghost { border: 1px solid #c3c3c3; color: var(--neutral-text); background: var(--white); }
+.btn-ghost:hover { border-color: var(--ottanio-flee); }
+
+/* ---------------- Header ---------------- */
+.site-header {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  max-width: var(--maxw); margin: 0 auto; padding: 20px clamp(16px, 4vw, 40px);
+}
+.site-header .logo { width: 72px; height: 37px; color: var(--green-flee); }
+.site-header nav { display: flex; gap: clamp(16px, 2.5vw, 40px); font-size: 16px; font-weight: 500; }
+.site-header nav a { color: var(--neutral-text); white-space: nowrap; }
+.site-header nav a:hover { color: var(--ottanio-flee); }
+.area-riservata { display: flex; align-items: center; gap: 10px; border: 1px solid #c3c3c3;
+  border-radius: 9999px; padding: 13px 26px; font-size: 16px; font-weight: 600; color: var(--neutral-text); white-space: nowrap; }
+.area-riservata:hover { border-color: var(--ottanio-flee); }
+.area-riservata .icon { width: 20px; height: 21px; }
+.burger { display: none; width: 44px; height: 44px; align-items: center; justify-content: center; color: var(--ottanio-flee); }
+.burger svg { width: 28px; height: 28px; }
+@media (max-width: 920px) {
+  .site-header nav, .area-riservata { display: none; }
+  .burger { display: inline-flex; }
+}
+
+/* ---------------- Mobile nav drawer ---------------- */
+.mnav-overlay { position: fixed; inset: 0; background: rgba(3,51,66,.5); z-index: 80; opacity: 0; visibility: hidden; transition: opacity .25s ease; }
+.mnav-overlay.open { opacity: 1; visibility: visible; }
+.mnav { position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 88%); background: #fff; z-index: 81;
+  transform: translateX(100%); transition: transform .28s ease; display: flex; flex-direction: column; gap: 4px;
+  padding: 72px 24px 24px; box-shadow: -8px 0 40px rgba(0,0,0,.15); }
+.mnav.open { transform: none; }
+.mnav a { font-size: 18px; font-weight: 500; color: var(--neutral-text); padding: 14px 8px; min-height: 44px; display: flex; align-items: center; border-bottom: 1px solid var(--neutral-280); }
+.mnav a:hover { color: var(--ottanio-flee); }
+.mnav .mnav-area { margin-top: 16px; border: 1px solid #c3c3c3; border-radius: 9999px; justify-content: center; font-weight: 600; border-bottom: 1px solid #c3c3c3; }
+.mnav-close { position: absolute; top: 18px; right: 18px; width: 44px; height: 44px; border-radius: 50%;
+  background: var(--secondary-100); display: flex; align-items: center; justify-content: center; color: var(--ottanio-flee); }
+.mnav-close svg { width: 14px; height: 14px; }
+
+/* ---------------- Footer ---------------- */
+.site-footer { background: var(--ottanio-flee); color: var(--white); margin-top: 80px; padding: 56px 0 32px; }
+.footer-grid { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; }
+.footer-brand .logo { width: 80px; color: var(--green-flee); margin-bottom: 20px; }
+.footer-brand .label { font-size: 14px; opacity: .85; margin-bottom: 10px; }
+.footer-social { display: flex; gap: 12px; margin-bottom: 24px; }
+.footer-social a { width: 44px; height: 44px; border: 1px solid rgba(255,255,255,.3); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; }
+.footer-social a:hover { background: rgba(255,255,255,.12); }
+.footer-social .icon { width: 18px; height: 18px; }
+.footer-ai { display: flex; gap: 12px; }
+.footer-ai .icon { width: 24px; height: 24px; opacity: .85; }
+.footer-col h4 { font-size: 16px; font-weight: 600; margin-bottom: 16px; }
+.footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.footer-col a { font-size: 15px; opacity: .85; }
+.footer-col a:hover { opacity: 1; }
+.footer-sos { display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(255,255,255,.4);
+  border-radius: 9999px; padding: 10px 22px; font-weight: 600; margin-top: 4px; }
+.footer-legal { border-top: 1px solid rgba(255,255,255,.18); margin-top: 40px; padding-top: 24px;
+  font-size: 13px; opacity: .7; line-height: 1.6; }
+@media (max-width: 920px) {
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .footer-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) { .footer-grid { grid-template-columns: 1fr; } }
+
+/* ---------------- Badges ---------------- */
+.badge { display: inline-flex; align-items: center; gap: 6px; background: var(--ottanio-flee); color: var(--white);
+  font-size: 12px; font-weight: 700; border-radius: 8px; padding: 4px 8px; white-space: nowrap; line-height: 1.1; }
+.badge .icon { width: 14px; height: 14px; }
+.badge-promo { background: var(--promo-pink); }

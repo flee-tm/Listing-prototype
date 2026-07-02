@@ -1,0 +1,204 @@
+/* ===================================================================
+   Flee — prototipo mobile (iPhone 17, 402px). Estilos compartidos.
+   Carga DESPUÉS de flee-library/site.css (usa sus tokens).
+   =================================================================== */
+:root {
+  --card-border: #c9d5da;
+  --card-alt: #e2eaed;
+  --price-bg: #fafafa;
+  --muted: #666;
+  --promo: #b60088;
+  --promo-fill: rgba(182,0,136,.12);
+  --text-negative: #f3f6f7;
+  --safe-top: 8px;
+  --safe-bottom: 24px;
+}
+
+html { -webkit-text-size-adjust: 100%; }
+body { background: #eceff1; }
+/* garantiza Space Grotesk en todos los controles (no heredan por defecto) */
+input, select, textarea, button, optgroup, option { font-family: inherit; }
+
+/* Lienzo del dispositivo: ancho iPhone 17 (402px), centrado en pantallas grandes */
+.app {
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #fff;
+  position: relative;
+  box-shadow: 0 0 0 1px rgba(4,81,104,.06), 0 24px 64px rgba(4,81,104,.10);
+}
+.app main { padding-bottom: 24px; }
+
+/* ---------------- Header mobile (logo + burger) ---------------- */
+.m-header { position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; background: #fff; box-shadow: 0 1px 0 rgba(0,0,0,.08); }
+.m-logo { display: block; width: 76px; }
+.m-logo svg { display: block; width: 100%; }
+.m-burger { display: flex; align-items: center; justify-content: center; width: 28px; height: 28px; color: var(--ottanio-flee); }
+.m-burger .icon { width: 26px; height: 26px; }
+
+/* ---------------- Footer mobile (columna apilada) ---------------- */
+.m-footer { background: var(--ottanio-flee); color: #fff; display: flex; flex-direction: column; gap: 36px; padding: 44px 24px calc(36px + var(--safe-bottom)); }
+.mf-logo { display: block; width: 70px; }
+.mf-logo svg { display: block; width: 100%; filter: brightness(0) invert(1); }
+.mf-group { display: flex; flex-direction: column; gap: 10px; }
+.mf-label { font-size: 12px; color: var(--text-negative); }
+.mf-icons { display: flex; gap: 16px; }
+.mf-icons .icon { width: 28px; height: 28px; color: #fff; }
+.mf-icons-ai { gap: 8px; }
+.mf-menu { display: flex; flex-direction: column; gap: 14px; }
+.mf-menu h4 { font-size: 24px; font-weight: 600; margin-bottom: 2px; }
+.mf-menu a { font-size: 16px; font-weight: 400; color: #fff; opacity: .95; }
+.mf-menu a:hover { opacity: 1; }
+.mf-sos { display: flex; align-items: center; justify-content: center; gap: 8px; height: 56px;
+  border: 1px solid rgba(255,255,255,.4); border-radius: 48px; font-size: 16px; font-weight: 700; color: var(--text-negative); }
+.mf-sos .icon { width: 20px; height: 20px; }
+.mf-legal { font-size: 14px; line-height: 21px; color: var(--text-negative); }
+
+/* ---------------- Hero ---------------- */
+.m-hero { padding: 20px 16px 8px; }
+.m-hero h1 { font-size: 30px; line-height: 1.08; font-weight: 600; letter-spacing: -0.02em; }
+.m-hero p { font-size: 15px; line-height: 1.4; margin-top: 12px; color: var(--ottanio-700); }
+
+/* ---------------- Barra de filtros ---------------- */
+.m-toolbar { padding: 16px; display: flex; justify-content: center; }
+.m-filter-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  border: 1px solid rgba(4,81,104,.4); border-radius: 48px; padding: 16px 32px; font-size: 16px; font-weight: 700;
+  color: var(--ottanio-flee); background: #fff; }
+.m-filter-btn .icon { width: 20px; height: 20px; }
+.m-filter-btn .count { font-weight: 700; color: var(--ottanio-flee); }
+
+.m-count { padding: 16px 16px 0; font-size: 16px; font-weight: 500; }
+.m-count b { font-weight: 700; }
+
+/* ---------------- Lista de tarjetas ---------------- */
+.m-cards { display: flex; flex-direction: column; gap: 20px; padding: 16px; }
+
+.mcard { display: flex; flex-direction: column; border: 1px solid var(--card-border); border-radius: 24px;
+  overflow: hidden; background: #fff; color: var(--ottanio-flee);
+  transition: box-shadow .2s ease, transform .2s ease; }
+.mcard:active { transform: scale(.992); }
+.mcard.promo { border: 2px solid var(--promo); }
+
+.mcard-top { position: relative; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.mcard-tags { display: flex; align-items: center; gap: 8px; min-height: 24px; }
+.tag { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 4px 8px; border-radius: 8px;
+  font-size: 14px; font-weight: 700; white-space: nowrap; line-height: 1; }
+.tag-deliver { background: var(--ottanio-flee); color: var(--text-negative); }
+.tag-feat { background: var(--card-alt); color: var(--ottanio-flee); }
+
+/* Tag de esquina (promoción): pegado arriba-derecha, esquinas bl + tr */
+.mcard-promotag { position: absolute; top: 0; right: 0; z-index: 2; display: inline-flex; align-items: center;
+  padding: 13px 20px; border: 1px solid var(--promo); background: var(--promo-fill); color: var(--promo);
+  font-size: 14px; font-weight: 700; line-height: 1; white-space: nowrap;
+  border-top-right-radius: 22px; border-bottom-left-radius: 22px; }
+
+.mcard-img { height: 176px; display: flex; align-items: center; justify-content: center; }
+.mcard-img img { width: 100%; height: 100%; object-fit: contain; }
+
+.mcard-usato { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; }
+.mcard-usato .icon { width: 16px; height: 16px; }
+
+.mcard-info h3 { font-size: 26px; font-weight: 600; line-height: 1.1; }
+.mcard-info p { font-size: 14px; margin-top: 4px; color: var(--ottanio-700); }
+
+.mcard-specs { display: flex; align-items: center; justify-content: space-between;
+  border-top: 1px solid var(--card-border); border-bottom: 1px solid var(--card-border); padding: 10px 0; }
+.spec { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+.spec .icon { width: 16px; height: 16px; color: var(--ottanio-flee); }
+
+.mcard-feats { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Panel de precio */
+.mcard-price { background: var(--price-bg); padding: 20px 16px; display: flex; flex-direction: column;
+  align-items: center; gap: 10px; }
+.price-row { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.amt { display: flex; align-items: flex-start; gap: 6px; }
+.amt .big { font-size: 40px; font-weight: 700; line-height: 1; }
+.amt .unit { display: flex; flex-direction: column; gap: 2px; line-height: 1; padding-top: 2px; }
+.amt .unit .cur { font-size: 0; font-weight: 700; }
+.amt .unit .cur b { font-size: 18px; font-weight: 400; }
+.amt .unit .cur span { font-size: 12px; font-weight: 500; }
+.amt .unit small { font-size: 12px; font-weight: 400; color: var(--muted); }
+.price-plus { width: 24px; height: 24px; color: var(--ottanio-flee); align-self: center; }
+.amt.km .big { font-size: 36px; }
+.strike { color: var(--ottanio-700); text-decoration: line-through; font-size: 22px; font-weight: 700; align-self: center; }
+.mcard-price.is-promo .amt.month .big { color: var(--promo); }
+.mcard-terms { font-size: 12px; text-align: center; color: var(--ottanio-flee); }
+.mcard-terms b { font-weight: 600; }
+.promo-note { display: flex; align-items: center; gap: 6px; color: var(--promo); font-size: 12px; text-align: center; }
+.promo-note .icon { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ---------------- Botón cargar más / torna su ---------------- */
+.m-more { padding: 8px 16px 24px; display: flex; justify-content: center; }
+.m-more .btn { min-width: 180px; }
+
+/* ---------------- Sección SEO + CTA ---------------- */
+.m-seo { padding: 32px 16px; background: var(--secondary-100); }
+.m-seo h2 { font-size: 22px; font-weight: 600; line-height: 1.2; }
+.m-seo .lead { font-size: 15px; line-height: 1.5; margin-top: 12px; color: var(--ottanio-700); }
+.m-seo .block { margin-top: 20px; }
+.m-seo .block h3 { font-size: 16px; font-weight: 700; }
+.m-seo .block p { font-size: 14px; line-height: 1.5; margin-top: 6px; color: var(--ottanio-700); }
+
+.m-cta { margin: 24px 16px 0; border: 1px solid var(--card-border); border-radius: 20px; padding: 24px 20px; text-align: center; }
+.m-cta h3 { font-size: 20px; font-weight: 600; }
+.m-cta p { font-size: 14px; line-height: 1.5; margin: 10px 0 18px; color: var(--ottanio-700); }
+
+/* ---------------- Bottom sheet de filtros ---------------- */
+.sheet-overlay { position: fixed; inset: 0; background: rgba(3,51,66,.5); display: none; z-index: 90; }
+.sheet-overlay.open { display: block; }
+.sheet { position: fixed; left: 50%; transform: translateX(-50%) translateY(100%);
+  bottom: 0; width: 100%; max-width: 430px; background: #fff; z-index: 91;
+  border-radius: 24px 24px 0 0; max-height: 90vh; display: flex; flex-direction: column;
+  transition: transform .3s cubic-bezier(.22,1,.36,1); box-shadow: 0 -12px 40px rgba(0,0,0,.2); }
+.sheet.open { transform: translateX(-50%) translateY(0); }
+.sheet-grip { width: 40px; height: 4px; border-radius: 2px; background: var(--neutral-280); margin: 10px auto 0; }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 20px; border-bottom: 1px solid #e6e6e6; }
+.sheet-head h3 { font-size: 24px; font-weight: 500; color: var(--ottanio-flee); line-height: 1.1; }
+.sheet-close { width: 36px; height: 36px; border-radius: 50%; background: var(--secondary-100);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.sheet-close .icon { width: 14px; height: 14px; }
+.sheet-body { flex: 1; overflow-y: auto; padding: 0 16px; -webkit-overflow-scrolling: touch; }
+.sheet-foot { padding: 20px 16px calc(20px + var(--safe-bottom)); display: flex; gap: 8px; align-items: center;
+  border-top: 1px solid #e6e6e6; }
+.f-reset { flex: 1; display: inline-flex; gap: 8px; align-items: center; justify-content: center; background: none;
+  border: 0; cursor: pointer; font-size: 16px; font-weight: 700; color: var(--ottanio-flee); }
+.f-reset .icon { width: 16px; height: 16px; color: var(--ottanio-flee); }
+.sheet-foot .btn { flex: 1; }
+
+/* Accordions con botones multi-select */
+.facc-group { display: flex; flex-direction: column; gap: 24px; padding-top: 24px; }
+.facc { border-bottom: 1px solid var(--card-border); }
+.facc-head { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 16px 0; text-align: left; }
+.facc-head .ftitle { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+.facc-head .ftitle > span:first-child { font-size: 16px; font-weight: 600; color: var(--ottanio-flee); line-height: 24px; }
+.facc-count { background: var(--card-alt); border-radius: 99px; height: 24px; padding: 0 12px;
+  display: inline-flex; align-items: center; font-size: 14px; font-weight: 600; color: var(--ottanio-flee); flex-shrink: 0; }
+.facc-head .icon { width: 24px; height: 24px; transition: transform .25s ease; color: var(--ottanio-flee); flex-shrink: 0; }
+.facc.open .facc-head .icon { transform: rotate(180deg); }
+.facc-body { max-height: 0; overflow: hidden; transition: max-height .28s ease; }
+.facc.open .facc-body { max-height: 700px; }
+.facc-inner { display: flex; flex-direction: column; gap: 8px; padding-bottom: 16px; }
+.fbtn-row { display: flex; gap: 8px; align-items: center; }
+.fbtn { flex: 1 0 0; min-width: 1px; height: 56px; padding: 8px; border-radius: 8px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; background: #fff; border: 1px solid var(--card-border);
+  font-size: 16px; font-weight: 400; color: var(--ottanio-flee); white-space: nowrap; text-align: center; line-height: 1.1;
+  transition: background .12s ease, border-color .12s ease; }
+.fbtn.on { background: var(--card-alt); border-color: #1d6277; }
+.fbtn-spacer { flex: 1 0 0; min-width: 1px; height: 56px; visibility: hidden; }
+
+/* Toggle rows */
+.frow-group { display: flex; flex-direction: column; padding: 8px 0 24px; }
+.frow { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 48px; }
+.frow-label { font-size: 16px; font-weight: 400; color: var(--ottanio-flee); }
+.switch { position: relative; width: 56px; height: 32px; border-radius: 9999px; background: var(--toggle-off);
+  transition: background .22s ease; flex-shrink: 0; }
+.switch::after { content: ''; position: absolute; top: 2px; left: 2px; width: 28px; height: 28px;
+  border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.18); transition: transform .22s ease; }
+.switch[aria-checked="true"] { background: var(--green-flee); }
+.switch[aria-checked="true"]::after { transform: translateX(24px); }
+
+.m-empty { text-align: center; padding: 48px 16px; color: var(--ottanio-700); font-size: 16px; }

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Catalogo · Flee mobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="flee-library/site.css">
+<link rel="stylesheet" href="m-app.css">
+</head>
+<body>
+  <div class="app">
+    <div id="flee-header"></div>
+
+    <main>
+      <section class="m-hero">
+        <h1>Noleggio a lungo termine<br>Pay per Use e Flat</h1>
+        <p>Che sia la libertà del Pay per Use o la serenità del Flat, il nostro noleggio si adatta sempre alla tua mobilità.</p>
+      </section>
+
+      <div class="m-toolbar">
+        <button class="m-filter-btn" id="open-filters">
+          <span class="icon" id="i-filter"></span>
+          <span>Tutti i filtri</span>
+          <span class="count" id="filter-count"></span>
+        </button>
+      </div>
+
+      <p class="m-count"><b id="result-count">0</b> offerte disponibili</p>
+      <div class="m-cards" id="cards"></div>
+      <p class="m-empty" id="empty" hidden>Nessuna offerta corrisponde ai filtri selezionati.</p>
+
+      <section class="m-seo">
+        <h2>Pay Per Use e Flat: cosa significano? 🚗</h2>
+        <p class="lead">Stai cercando la formula di noleggio perfetta per te? Sgombriamo il campo da ogni dubbio.</p>
+        <div class="block">
+          <h3>Flat</h3>
+          <p>Una rata fissa ogni mese, tutto incluso: manutenzione, assicurazione, chilometri. Zero sorprese, solo guida spensierata.</p>
+        </div>
+        <div class="block">
+          <h3>Pay Per Use</h3>
+          <p>Per chi ama la libertà: una quota fissa più una piccola tariffa al chilometro. Risparmi quando non usi l'auto.</p>
+        </div>
+        <div class="block">
+          <p>Non sei sicuro? Il nostro noleggio è flessibile: puoi passare da una formula all'altra quando vuoi.</p>
+        </div>
+
+        <div class="m-cta">
+          <h3>Non hai trovato quello che cercavi?</h3>
+          <p>Niente panico! Forse era solo ben nascosto. 🤔 Dai un'altra occhiata o chiedi ad Aldo, il nostro chatbot.</p>
+          <button class="btn btn-primary">Chiedi ad Aldo</button>
+        </div>
+      </section>
+    </main>
+
+    <div id="flee-footer"></div>
+  </div>
+
+  <!-- Bottom sheet filtri -->
+  <div class="sheet-overlay" id="filter-overlay"></div>
+  <div class="sheet" id="filter-sheet" role="dialog" aria-modal="true" aria-label="Tutti i filtri">
+    <div class="sheet-grip"></div>
+    <div class="sheet-head">
+      <h3>Tutti i filtri</h3>
+      <button class="sheet-close" id="filter-close" aria-label="Chiudi"><span class="icon" id="i-close"></span></button>
+    </div>
+    <div class="sheet-body" id="filter-body"></div>
+    <div class="sheet-foot">
+      <button class="f-reset" id="reset-filters"><span class="icon" id="i-reset"></span>Azzera filtri</button>
+      <button class="btn btn-primary" id="apply-filters">Mostra risultati</button>
+    </div>
+  </div>
+
+  <script src="flee-library/data/cars.js"></script>
+  <script src="m-app.js"></script>
+  <script>
+  (function () {
+    const { cars, kindOf, pricing, eur0, money, monthly, I } = MF;
+    document.getElementById('i-filter').innerHTML = I.filter;
+    document.getElementById('i-close').innerHTML = I.close;
+    document.getElementById('i-reset').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M1 4v6h6"/><path d="M3.51 15a9 9 0 1 0 .49-5.36"/></svg>';
+
+    /* ---------- tarjeta ---------- */
+    function priceBlock(c, k) {
+      const p = pricing(c, k);
+      const isPromo = c.promo && p.disc > 0;
+      const month = `
+        <span class="amt month">
+          <span class="big">${monthly(isPromo ? p.monthlyPromo : p.monthly)}</span>
+          <span class="unit"><span class="cur"><b>€</b><span>/mese</span></span><small>iva incl.</small></span>
+        </span>`;
+      const km = p.perKm != null ? `
+        <span class="price-plus icon">${I.plus}</span>
+        <span class="amt km">
+          <span class="big">${money(p.perKm)}</span>
+          <span class="unit"><span class="cur"><b>€</b><span>/km</span></span><small>iva incl.</small></span>
+        </span>` : '';
+      const strike = isPromo ? `<span class="strike">${monthly(p.monthly)}</span>` : '';
+      const terms = k === 'broker'
+        ? `<b>${c.duration} mesi</b> • Anticipo <b>${eur0(c.advance)} €</b> • <b>${eur0(c.distance)}</b> km/anno`
+        : `<b>${c.duration} mesi</b> • Anticipo <b>${eur0(c.advance)} €</b> iva incl.`;
+      const note = isPromo ? `<div class="promo-note"><span class="icon">${I.spark}</span>${c.label.description}</div>` : '';
+      return `
+        <div class="mcard-price${isPromo ? ' is-promo' : ''}">
+          <div class="price-row">${strike}${month}${km}</div>
+          ${note}
+          <div class="mcard-terms">${terms}</div>
+        </div>`;
+    }
+
+    function featTags(k) {
+      const tags = k === 'broker'
+        ? ['Anche con Anticipo zero', 'Alte percorrenze']
+        : ['Customer care dedicato', 'Pay per use', 'Assicurazione senza franchigie'];
+      return tags.map(t => `<span class="tag tag-feat">${t}</span>`).join('');
+    }
+
+    function card(c) {
+      const k = kindOf(c);
+      const deliver = c.fastDelivery ? `<span class="tag tag-deliver">Consegna a ${c.deliveryEta} giorni</span>` : '';
+      const promo = c.promo ? `<div class="mcard-promotag">Promozione</div>` : '';
+      const usato = c.secondhand ? `<div class="mcard-usato"><span class="icon">${I.refresh}</span>Usato garantito</div>` : '';
+      return `
+        <a class="mcard${c.promo ? ' promo' : ''}" href="m-scheda.html?id=${encodeURIComponent(c.slug)}">
+          <div class="mcard-top">
+            ${promo}
+            <div class="mcard-tags">${deliver}</div>
+            <div class="mcard-img"><img src="${c.image}" alt="${c.brand} ${c.name}" loading="lazy"></div>
+            ${usato}
+            <div class="mcard-info"><h3>${c.brand} ${c.name}</h3><p>${c.modification}</p></div>
+            <div class="mcard-specs">
+              <span class="spec"><span class="icon">${I.gear}</span>${c.gearbox}</span>
+              <span class="spec"><span class="icon">${I.fuel}</span>${c.fuel}</span>
+            </div>
+            <div class="mcard-feats">${featTags(k)}</div>
+          </div>
+          ${priceBlock(c, k)}
+        </a>`;
+    }
+
+    /* ---------- filtros (según filter-panel-preview) ---------- */
+    const uniq = (key) => [...new Set(cars.map(c => c[key]).filter(Boolean))].sort();
+    const SECTIONS = [
+      { key: 'rata', label: 'Tipo di rata', opts: ['A consumo', 'Fisso'] },
+      { key: 'typology', label: 'Tipologia veicolo', opts: uniq('typology') },
+      { key: 'fuel', label: 'Alimentazione', opts: uniq('fuel') },
+      { key: 'gearbox', label: 'Cambio', opts: uniq('gearbox') },
+      { key: 'brand', label: 'Brand', opts: uniq('brand') },
+    ];
+    const TOGGLES = [
+      { key: 'fastDelivery', label: 'Consegna a breve' },
+      { key: 'promo', label: 'In promozione' },
+      { key: 'anticipoZero', label: 'Anticipo zero' },
+      { key: 'secondhand', label: 'Usato garantito' },
+      { key: 'newLicense', label: 'Neopatentati' },
+    ];
+    const state = { rata: new Set(), typology: new Set(), fuel: new Set(), gearbox: new Set(), brand: new Set(), toggles: new Set() };
+
+    // agrupa opciones en filas de 3; rellena con spacers solo si hay >1 fila
+    function rows3(opts) {
+      const rows = [];
+      for (let i = 0; i < opts.length; i += 3) rows.push(opts.slice(i, i + 3));
+      if (rows.length > 1) { const last = rows[rows.length - 1]; while (last.length < 3) last.push(null); }
+      return rows;
+    }
+
+    function buildFilters() {
+      const el = document.getElementById('filter-body');
+      const acc = SECTIONS.map(s => {
+        const cnt = state[s.key].size;
+        const body = rows3(s.opts).map(row =>
+          `<div class="fbtn-row">${row.map(o => o === null
+            ? '<div class="fbtn-spacer"></div>'
+            : `<button type="button" class="fbtn${state[s.key].has(o) ? ' on' : ''}" data-sec="${s.key}" data-val="${o}">${o}</button>`
+          ).join('')}</div>`).join('');
+        return `<div class="facc" data-acc="${s.key}">
+          <button type="button" class="facc-head">
+            <span class="ftitle"><span>${s.label}</span>${cnt ? `<span class="facc-count">${cnt}</span>` : ''}</span>
+            <span class="icon">${I.chevronDown}</span>
+          </button>
+          <div class="facc-body"><div class="facc-inner">${body}</div></div>
+        </div>`;
+      }).join('');
+      const toggles = TOGGLES.map(t =>
+        `<div class="frow"><span class="frow-label">${t.label}</span><button class="switch" role="switch" aria-checked="${state.toggles.has(t.key)}" data-toggle="${t.key}"></button></div>`
+      ).join('');
+      el.innerHTML = `<div class="facc-group">${acc}</div><div class="frow-group">${toggles}</div>`;
+
+      el.querySelectorAll('.facc-head').forEach(h => h.addEventListener('click', () => h.parentElement.classList.toggle('open')));
+      el.querySelectorAll('.fbtn').forEach(b => b.addEventListener('click', () => {
+        const set = state[b.dataset.sec]; const v = b.dataset.val;
+        set.has(v) ? set.delete(v) : set.add(v);
+        b.classList.toggle('on');
+        updateCount(b.dataset.sec);
+        render();
+      }));
+      el.querySelectorAll('.switch').forEach(sw => sw.addEventListener('click', () => {
+        const on = sw.getAttribute('aria-checked') !== 'true';
+        sw.setAttribute('aria-checked', on);
+        on ? state.toggles.add(sw.dataset.toggle) : state.toggles.delete(sw.dataset.toggle);
+        render();
+      }));
+    }
+
+    function updateCount(sec) {
+      const title = document.querySelector(`.facc[data-acc="${sec}"] .ftitle`);
+      if (!title) return;
+      const cnt = state[sec].size;
+      let badge = title.querySelector('.facc-count');
+      if (cnt) { if (!badge) { badge = document.createElement('span'); badge.className = 'facc-count'; title.appendChild(badge); } badge.textContent = cnt; }
+      else if (badge) badge.remove();
+    }
+
+    function matchesRata(c) {
+      if (!state.rata.size) return true;
+      return state.rata.has(kindOf(c) === 'broker' ? 'Fisso' : 'A consumo');
+    }
+    function matches(c) {
+      for (const t of state.toggles) {
+        if (t === 'anticipoZero') { if (kindOf(c) !== 'broker') return false; }
+        else if (!c[t]) return false;
+      }
+      for (const key of ['typology', 'fuel', 'gearbox', 'brand'])
+        if (state[key].size && !state[key].has(c[key])) return false;
+      return matchesRata(c);
+    }
+    function activeCount() {
+      return state.toggles.size + ['rata', 'typology', 'fuel', 'gearbox', 'brand'].reduce((n, k) => n + state[k].size, 0);
+    }
+
+    function render() {
+      const list = cars.filter(matches);
+      document.getElementById('cards').innerHTML = list.map(card).join('');
+      document.getElementById('result-count').textContent = list.length;
+      document.getElementById('empty').hidden = list.length > 0;
+      const n = activeCount();
+      document.getElementById('filter-count').textContent = n ? `(${n})` : '';
+    }
+
+    function resetFilters() {
+      ['rata', 'typology', 'fuel', 'gearbox', 'brand'].forEach(k => state[k].clear());
+      state.toggles.clear();
+      buildFilters(); render();
+    }
+
+    /* ---------- abrir / cerrar sheet ---------- */
+    const overlay = document.getElementById('filter-overlay');
+    const sheet = document.getElementById('filter-sheet');
+    const open = () => { overlay.classList.add('open'); sheet.classList.add('open'); document.body.style.overflow = 'hidden'; };
+    const close = () => { overlay.classList.remove('open'); sheet.classList.remove('open'); document.body.style.overflow = ''; };
+    document.getElementById('open-filters').addEventListener('click', open);
+    document.getElementById('filter-close').addEventListener('click', close);
+    document.getElementById('apply-filters').addEventListener('click', close);
+    overlay.addEventListener('click', close);
+    document.getElementById('reset-filters').addEventListener('click', resetFilters);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') close(); });
+
+    buildFilters();
+    render();
+  })();
+  </script>
+</body>
+</html>

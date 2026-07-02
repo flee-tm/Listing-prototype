@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Scheda prodotto · Flee mobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="flee-library/site.css">
+<link rel="stylesheet" href="m-app.css">
+<style>
+  .app main { padding-bottom: 8px; }
+  .app .m-footer { padding-bottom: 240px; } /* el footer extiende su fondo ottanio tras la barra fija (JS lo ajusta) */
+
+  /* ---- Card pagina prodotto ---- */
+  .pcard { position: relative; width: calc(100% - 32px); max-width: 350px; margin: 20px auto 0;
+    border: 1px solid var(--card-border); border-radius: 24px;
+    background: #fff; padding: 16px; display: flex; flex-direction: column; gap: 16px; align-items: center; overflow: hidden; }
+  .pcard.promo { border: 2px solid var(--promo); }
+  .pcard-tagrow { display: flex; align-items: center; width: 100%; min-height: 24px; }
+  .pcard-img { width: 100%; height: 140px; }
+  .pcard-img img { width: 100%; height: 100%; object-fit: contain; }
+  .pcard-repr { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ottanio-flee); }
+  .pcard-repr .icon { width: 16px; height: 16px; flex-shrink: 0; }
+  .pcard-usato { display: flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 600; color: #04475c; }
+  .pcard-usato .icon { width: 16px; height: 16px; }
+  .pcard-title { text-align: center; max-width: 240px; color: var(--ottanio-flee); line-height: 1.1; }
+  .pcard-title .kicker { display: block; font-size: 14px; font-weight: 600; }
+  .pcard-title .name { font-size: 28px; font-weight: 600; }
+  .pcard-title .version { display: block; font-size: 16px; font-weight: 400; margin-top: 2px; }
+  .pcard-colors { text-align: center; }
+  .pcard-colors .lbl { font-size: 12px; font-weight: 600; color: #04475c; }
+  .pcard-colors .vals { font-size: 12px; color: #04475c; margin-top: 2px; }
+
+  /* ---- Secciones ---- */
+  .sec { padding: 40px 16px; }
+  .sec h2 { font-size: 20px; font-weight: 600; line-height: 1.3; }
+  .sec-center h2 { text-align: center; }
+
+  /* ---- Calcola il tuo canone ---- */
+  .fields { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
+  .m-field { display: flex; flex-direction: column; gap: 8px; }
+  .m-field > label { font-size: 16px; color: var(--ottanio-flee); }
+  .m-select { position: relative; display: flex; align-items: center; justify-content: space-between;
+    height: 56px; padding: 0 24px; border: 1px solid var(--card-border); border-radius: 16px; background: #fff;
+    font-size: 16px; color: var(--ottanio-flee); }
+  .m-select select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; border: 0;
+    font-size: 16px; -webkit-appearance: none; appearance: none; }
+  .m-select .m-select-val.is-dim { color: #879da6; }
+  .m-select .icon { width: 24px; height: 24px; color: var(--ottanio-flee); }
+  .m-hint { display: flex; gap: 6px; align-items: flex-start; font-size: 12px; line-height: 1.4; color: #5b747f; }
+  .m-hint .icon { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; }
+  .m-hint b { font-weight: 600; }
+  .m-hint .hl { display: block; }
+  .m-hint .hl + .hl { margin-top: 6px; }
+
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; }
+  .toggle-row .tr-t { font-size: 16px; color: var(--ottanio-flee); }
+  .toggle-row .tr-s { font-size: 13px; color: var(--ottanio-flee); margin-top: 4px; }
+
+  .m-breadcrumb { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 4px;
+    margin-top: 24px; font-size: 14px; color: var(--ottanio-700); }
+  .m-breadcrumb .icon { width: 16px; height: 16px; color: var(--ottanio-700); }
+
+  /* ---- Accordion cards (specs) ---- */
+  .acards { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
+  .acard { background: var(--secondary-100); border: 1px solid var(--card-alt); border-radius: 16px; overflow: hidden; }
+  .acard-head { width: 100%; display: flex; align-items: center; gap: 16px; padding: 24px; text-align: left; }
+  .acard-head .txt { flex: 1; display: flex; flex-direction: column; }
+  .acard-head .txt .t { font-size: 20px; font-weight: 600; color: var(--ottanio-flee); }
+  .acard-head .txt .s { font-size: 14px; color: var(--ottanio-flee); margin-top: 2px; }
+  .acard-head .icon { width: 24px; height: 24px; color: var(--ottanio-flee); transition: transform .2s ease; flex-shrink: 0; }
+  .acard.open .acard-head .icon { transform: rotate(180deg); }
+  .acard-body { display: none; padding: 0 24px 24px; font-size: 14px; line-height: 1.5; color: var(--ottanio-700); }
+  .acard.open .acard-body { display: block; }
+  .spec-list { display: flex; flex-direction: column; }
+  .spec-list .row { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--card-alt); }
+  .spec-list .row:last-child { border-bottom: 0; }
+  .spec-list .row b { font-weight: 600; color: var(--ottanio-flee); }
+
+  /* ---- Cosa include (accordion, default abierto) ---- */
+  .sec-include { background: var(--secondary-100); padding: 40px 16px; }
+  .inc-head { width: 100%; display: flex; align-items: flex-start; gap: 24px; text-align: left; }
+  .inc-title { flex: 1; font-size: 20px; font-weight: 600; line-height: 1.2; color: var(--ottanio-flee); }
+  .inc-chev { width: 28px; height: 28px; color: var(--ottanio-flee); flex-shrink: 0; transition: transform .2s ease; }
+  .sec-include.open .inc-chev { transform: rotate(180deg); }
+  .inc-body { display: none; flex-direction: column; gap: 24px; margin-top: 24px; }
+  .sec-include.open .inc-body { display: flex; }
+  .inc-item { display: flex; gap: 10px; align-items: flex-start; }
+  .inc-item > .icon { width: 20px; height: 20px; color: var(--ottanio-flee); flex-shrink: 0; margin-top: 1px; }
+  .inc-item > .icon img { width: 100%; height: 100%; display: block; object-fit: contain; }
+  .inc-t { font-size: 16px; font-weight: 500; color: var(--ottanio-flee); }
+  .inc-s { font-size: 12px; color: var(--ottanio-flee); margin-top: 2px; line-height: 1.35; }
+  .inc-foot { display: flex; gap: 4px; font-size: 12px; font-weight: 500; line-height: 1.4; color: var(--ottanio-flee); }
+
+  /* ---- Cosa include · variante PPU ---- */
+  .inc-body.ppu { gap: 16px; }
+  .inc-partner { display: flex; flex-direction: column; gap: 6px; }
+  .inc-partner .ph { font-size: 14px; color: var(--ottanio-flee); }
+  .inc-partner .pm { display: flex; align-items: center; gap: 6px; font-size: 16px; font-weight: 700; color: var(--ottanio-flee); }
+  .inc-partner .pm .icon { width: 20px; height: 20px; }
+  .inc-partner .ps { font-size: 13px; color: var(--ottanio-700); line-height: 1.4; }
+  .inc-group { display: flex; flex-direction: column; gap: 16px; margin-top: 10px; }
+  .inc-gh { font-size: 16px; font-weight: 600; color: var(--ottanio-flee); }
+  .inc-flee-head { display: flex; flex-direction: column; gap: 8px; }
+  .inc-flee-logo { width: 52px; }
+  .inc-flee-logo svg { display: block; width: 100%; }
+  .cov-item { display: flex; gap: 8px; align-items: flex-start; }
+  .cov-item > .icon { width: 20px; height: 20px; color: var(--ottanio-flee); flex-shrink: 0; margin-top: 2px; }
+  .cov-item > .icon img { width: 100%; height: 100%; display: block; object-fit: contain; }
+  .cov-t { font-size: 16px; font-weight: 500; color: var(--ottanio-flee); line-height: 1.4; }
+  .cov-s { font-size: 12px; color: var(--ottanio-flee); margin-top: 4px; }
+  .cov-badge { display: inline-block; vertical-align: middle; font-size: 12px; font-weight: 500; line-height: 1.5;
+    border-radius: 4px; padding: 0 5px; white-space: nowrap; margin-left: 2px; }
+  .cov-badge.red { background: #c21a17; color: #fff; }
+  .cov-badge.grey { background: #c9d5da; color: #04475c; }
+  .srv-item { display: flex; gap: 12px; align-items: flex-start; }
+  .srv-item > .icon { width: 20px; height: 20px; color: var(--ottanio-flee); flex-shrink: 0; margin-top: 1px; }
+  .srv-item span { font-size: 15px; color: var(--ottanio-flee); line-height: 1.35; }
+
+  /* ---- Flee Care (solo PPU) · card oscura ---- */
+  .fc-card { width: 100%; background: var(--ottanio-flee); border-radius: 20px; padding: 24px; color: #fff; }
+  .fc-head { display: flex; align-items: center; gap: 12px; }
+  .fc-head .icon { width: 28px; height: 28px; color: #fff; }
+  .fc-head h3 { font-size: 20px; font-weight: 600; color: #fff; }
+  .fc-desc { font-size: 15px; line-height: 1.5; color: rgba(255,255,255,.9); margin-top: 16px; }
+  .fc-more { display: inline-flex; align-items: center; gap: 4px; font-size: 14px; font-weight: 700; color: #fff; margin-top: 16px; }
+  .fc-more .icon { width: 18px; height: 18px; }
+  .fc-divider { height: 1px; background: rgba(255,255,255,.2); margin: 24px 0; }
+  .fc-q { font-size: 16px; font-weight: 600; color: #fff; }
+  .fc-opt { display: flex; align-items: center; gap: 12px; padding: 14px 0; font-size: 16px; color: #fff; cursor: pointer; }
+  .fc-box { width: 20px; height: 20px; border: 1.5px solid rgba(255,255,255,.55); border-radius: 5px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; }
+  .fc-box .icon { width: 14px; height: 14px; opacity: 0; }
+  .fc-opt.on .fc-box { background: var(--green-flee); border-color: var(--green-flee); }
+  .fc-opt.on .fc-box .icon { opacity: 1; color: var(--ottanio-flee); }
+  .fc-radio { width: 20px; height: 20px; border: 1.5px solid rgba(255,255,255,.55); border-radius: 50%; flex-shrink: 0; position: relative; }
+  .fc-opt.on .fc-radio { border-color: #fff; }
+  .fc-opt.on .fc-radio::after { content: ''; position: absolute; inset: 4px; border-radius: 50%; background: #fff; }
+  .fc-note { display: flex; gap: 12px; align-items: flex-start; background: rgba(255,255,255,.08); border-radius: 16px; padding: 16px; margin-top: 24px; }
+  .fc-note .icon { width: 26px; height: 26px; color: var(--green-flee); flex-shrink: 0; }
+  .fc-note p { font-size: 13px; line-height: 1.45; color: rgba(255,255,255,.9); }
+
+  /* ---- I vantaggi ---- */
+  .vant .lead { font-size: 16px; line-height: 1.5; color: var(--ottanio-flee); margin-top: 32px; }
+  .vant-list { display: flex; flex-direction: column; gap: 24px; margin-top: 32px; }
+  .vant-item { display: flex; gap: 16px; align-items: flex-start; }
+  .vant-item .icon { width: 20px; height: 20px; color: var(--ottanio-flee); flex-shrink: 0; margin-top: 2px; }
+  .vant-item .vi-t { font-size: 16px; font-weight: 600; color: var(--ottanio-flee); }
+  .vant-item .vi-d { font-size: 16px; line-height: 1.45; color: var(--ottanio-flee); margin-top: 4px; }
+
+  /* ---- Pricing bar (sticky bottom) ---- */
+  .pricebar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px;
+    z-index: 50; background: var(--ottanio-flee); border-top: 2.5px solid var(--secondary-900);
+    padding: 18px 16px calc(12px + var(--safe-bottom)); display: flex; flex-direction: column; gap: 6px; align-items: center; }
+  .pricebar-toggle { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); height: 32px;
+    display: flex; align-items: center; gap: 8px; padding: 8px 16px; border-radius: 100px; background: var(--secondary-900);
+    color: #fff; font-size: 13px; font-weight: 500; white-space: nowrap; }
+  .pricebar-toggle .icon { width: 14px; height: 14px; }
+  .pb-row { display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+  .pb-col { display: flex; flex-direction: column; align-items: center; }
+  .pb-plus { width: 24px; height: 24px; color: #fff; }
+  .pricebar .pb-strike { color: #fff; font-size: 20px; font-weight: 500; text-decoration: line-through; line-height: 1; }
+  .pricebar .pb-price { display: flex; align-items: flex-start; gap: 4px; color: #fff; }
+  .pricebar .pb-price .num { font-size: 40px; font-weight: 700; line-height: 1; }
+  .pricebar .pb-price .unit { display: flex; flex-direction: column; gap: 4px; line-height: 1; padding-top: 2px; }
+  .pricebar .pb-price .unit .cur { font-size: 0; }
+  .pricebar .pb-price .unit .cur b { font-size: 20px; font-weight: 400; }
+  .pricebar .pb-price .unit .cur span { font-size: 12px; font-weight: 500; }
+  .pricebar .pb-price .unit small { font-size: 12px; }
+  .pricebar .pb-promo { background: #f4d9ed; color: var(--promo); font-size: 12px; font-weight: 600; border-radius: 8px; padding: 4px 8px; }
+  .pricebar .pb-cta { width: 100%; height: 56px; display: flex; align-items: center; justify-content: center; gap: 8px;
+    background: var(--green-flee); color: var(--ottanio-flee); border-radius: 48px; font-size: 16px; font-weight: 700; }
+  .pricebar .pb-note { font-size: 11px; color: var(--text-negative); text-align: center; }
+
+  /* ---- Riepilogo (overlay "Mostra dettagli") · tema oscuro ---- */
+  .riep { position: fixed; top: 0; bottom: 0; left: 50%; width: 100%; max-width: 430px; z-index: 60;
+    transform: translateX(-50%) translateY(100%); transition: transform .3s cubic-bezier(.22,1,.36,1);
+    background: var(--ottanio-flee); display: flex; flex-direction: column; }
+  .riep.open { transform: translateX(-50%) translateY(0); }
+  .riep-head { flex-shrink: 0; padding: 16px; }
+  .riep-close { display: inline-flex; align-items: center; gap: 12px; color: #fff; font-size: 16px; font-weight: 500; }
+  .riep-x { width: 48px; height: 48px; border-radius: 50%; background: rgba(255,255,255,.12); display: flex; align-items: center; justify-content: center; }
+  .riep-x .icon { width: 15px; height: 15px; color: #fff; }
+  .riep-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 8px 16px 24px; display: flex; flex-direction: column; gap: 24px; }
+  .riep-scroll > * { flex-shrink: 0; }
+  .riep-card { position: relative; overflow: hidden; background: var(--ottanio-700); border-radius: 16px;
+    padding: 40px 24px 32px; display: flex; flex-direction: column; align-items: center; gap: 16px; color: #fff; }
+  .riep-card .mcard-promotag { background: #f4d9ed; }
+  .riep-img { width: 100%; }
+  .riep-img img { width: 100%; height: 150px; object-fit: contain; display: block; }
+  .riep-repr { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #fff; }
+  .riep-repr .icon { width: 18px; height: 18px; }
+  .riep-name { font-size: 24px; font-weight: 600; text-align: center; }
+  .riep-version { font-size: 14px; text-align: center; }
+  .riep-divider { width: 100%; height: 1px; background: rgba(255,255,255,.2); border: 0; }
+  .riep-specs { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 16px; }
+  .riep-spec { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #fff; }
+  .riep-spec .icon { width: 14px; height: 14px; }
+  .riep-panel { background: var(--ottanio-700); border-radius: 16px; padding: 24px; color: #fff; }
+  .riep-acc-head { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    font-size: 20px; font-weight: 600; color: #fff; text-align: left; }
+  .riep-acc-head .icon { width: 24px; height: 24px; transition: transform .2s ease; transform: rotate(180deg); }
+  .riep-panel.closed .riep-acc-head .icon { transform: none; }
+  .riep-acc-body { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
+  .riep-panel.closed .riep-acc-body { display: none; }
+  .riep-ci { display: flex; gap: 10px; align-items: flex-start; }
+  .riep-ci > .icon { width: 20px; height: 20px; color: #fff; flex-shrink: 0; margin-top: 1px; }
+  .riep-ci > .icon img { width: 100%; height: 100%; display: block; object-fit: contain; filter: brightness(0) invert(1); }
+  .riep-ci .t { font-size: 16px; font-weight: 500; }
+  .riep-ci .s { font-size: 12px; color: rgba(255,255,255,.85); margin-top: 2px; line-height: 1.35; }
+  .riep-foot { display: flex; gap: 4px; font-size: 12px; line-height: 1.4; color: rgba(255,255,255,.85); }
+  .riep-summary h3 { font-size: 20px; font-weight: 600; }
+  .riep-summary .riep-divider { margin: 24px 0; }
+  .riep-rows { display: flex; flex-direction: column; gap: 8px; }
+  .riep-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; font-size: 14px; }
+  .riep-row .k { color: rgba(255,255,255,.85); }
+  .riep-row .v { font-weight: 600; }
+  .riep-row .v small { font-weight: 400; font-size: 12px; }
+  .riep-note { display: flex; flex-direction: column; gap: 16px; background: rgba(255,255,255,.06); border-radius: 16px; padding: 16px; }
+  .riep-note .rn-top { display: flex; gap: 12px; align-items: flex-start; }
+  .riep-note .rn-top .icon { width: 28px; height: 28px; color: var(--green-flee); flex-shrink: 0; }
+  .riep-note .rn-top p { font-size: 13px; line-height: 1.45; color: #fff; }
+  .riep-note .rn-toggle { display: flex; align-items: center; gap: 12px; font-size: 14px; color: #fff; }
+  .riep-pricebar { position: static; transform: none; left: auto; width: 100%; max-width: none; flex-shrink: 0; }
+</style>
+</head>
+<body>
+  <div class="app">
+    <div id="flee-header"></div>
+    <main>
+      <div id="pcard"></div>
+
+      <section class="sec">
+        <h2>Calcola il tuo canone</h2>
+        <div class="fields" id="fields"></div>
+        <nav class="m-breadcrumb" id="breadcrumb"></nav>
+      </section>
+
+      <section class="sec-include open" id="include"></section>
+
+      <section class="sec sec-center">
+        <h2 id="allest-title">Perché sceglierla con Flee</h2>
+        <div class="acards" id="specs"></div>
+      </section>
+
+      <section class="sec" id="fleecare-sec" hidden><div id="fleecare"></div></section>
+
+      <section class="sec vant">
+        <h2 id="vant-title">I vantaggi del noleggio a lungo termine</h2>
+        <p class="lead" id="vant-lead"></p>
+        <div class="vant-list" id="vant-list"></div>
+      </section>
+    </main>
+    <div id="flee-footer"></div>
+  </div>
+
+  <div class="pricebar" id="pricebar"></div>
+  <div class="riep" id="riep"></div>
+
+  <script src="flee-library/data/cars.js"></script>
+  <script src="m-app.js"></script>
+  <script>
+  (function () {
+    const { carById, kindOf, eur0, monthly, money, I } = MF;
+    const params = new URLSearchParams(location.search);
+    const car = carById(params.get('id')) || MF.cars[0];
+    const kind = kindOf(car);
+    const isPPU = kind === 'ppu';
+
+    /* ===== iconos (SVG inline librería Flee + PNG) ===== */
+    const _s = (paths, sw, extra) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw || '1.3'}" stroke-linecap="round" stroke-linejoin="round"${extra ? ' ' + extra : ''} xmlns="http://www.w3.org/2000/svg">${paths}</svg>`;
+    const _f = (paths) => `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">${paths}</svg>`;
+    const _p = (...d) => d.map(x => `<path d="${x}"/>`).join('');
+    const _img = (name) => `<img src="flee-library/assets/svg/${name}.png" alt="">`;
+    const ICON = {
+      shield: _s(_p('M15.3 10.0992L11.5 13.8992L9.3 11.5992M20 11.1992C20 15.6992 16.6 19.9992 12 20.9992C7.4 19.9992 4 15.6992 4 11.1992V7.59922C4 6.79922 4.5 6.09922 5.2 5.69922L10.2 3.69922C11.3 3.19922 12.6 3.19922 13.7 3.69922L18.7 5.69922C19.5 5.99922 20 6.69922 20 7.59922V11.1992Z')),
+      furto: _img('FurtoIncendio'),
+      danni: _s(_p('M8.25 11.5H6.25', 'M17.8799 8.29047L19.9999 7.23047', 'M5.12 8.29047L3 7.23047', 'M17.9498 8.65977L16.9898 4.54977C16.7798 3.64977 15.9698 3.00977 15.0398 3.00977H7.9598C7.0298 3.00977 6.2198 3.64977 6.0098 4.54977L5.0498 8.65977', 'M14.3399 19.0495L16.3499 15.6995C16.9099 14.7695 18.2499 14.7695 18.7999 15.6995L20.8099 19.0495C21.3299 19.9095 20.7099 20.9995 19.6999 20.9995H15.4399C14.4399 20.9995 13.8199 19.9095 14.3299 19.0495H14.3399Z', 'M20 12V11.5C20 9.84 18.66 8.5 17 8.5H6C4.34 8.5 3 9.84 3 11.5V16C3 16.55 3.45 17 4 17H6.24C6.79 17 7.24 16.55 7.24 16V14.5H11.98', 'M14.75 11.5H16.75')),
+      soccorso: _f(_p('M22.3 12.1992L20 6.44922C19.85 5.99922 19.5 5.64922 19.1 5.49922V5.14922C19.1 3.79922 18 2.69922 16.65 2.69922C15.3 2.69922 14.2 3.79922 14.2 5.14922V5.74922C13.8 6.04922 13.55 6.54922 13.55 7.09922V10.4992L5.25 5.14922C4.8 4.79922 4.2 4.84922 3.8 5.24922C3.45 5.54922 3.35 5.99922 3.45 6.39922V10.7492C3.45 11.0992 3.75 11.3992 4.1 11.3992C4.65 11.3992 5.1 11.8492 5.1 12.3992C5.1 12.9492 4.65 13.3992 4.1 13.3992C3.55 13.3992 3.1 12.9492 3.1 12.3992C3.1 12.0492 2.8 11.7492 2.45 11.7492C2.1 11.7492 1.8 12.0492 1.8 12.3992C1.8 13.6492 2.85 14.6992 4.1 14.6992C5.35 14.6992 6.4 13.6492 6.4 12.3992C6.4 11.3492 5.7 10.4492 4.75 10.1992V8.34922L9.3 14.5492H8.75C8.7 14.5492 8.7 14.5492 8.65 14.5492L2.65 15.5492C1.85 15.6992 1.25 16.4492 1.25 17.2492V18.0492C1.25 18.9992 2.05 19.7992 3 19.7992H4.3C4.55 20.8992 5.55 21.6992 6.7 21.6992C7.85 21.6992 8.8 20.8992 9.1 19.8492H15.65C15.95 20.8992 16.9 21.6992 18.05 21.6992C19.2 21.6992 20.15 20.8992 20.45 19.8492H20.75C21.7 19.8492 22.5 19.0492 22.5 18.0992V12.8492C22.45 12.5492 22.35 12.2992 22.3 12.1992ZM20.8 11.8992H17.75C17.5 11.8992 17.3 11.6992 17.3 11.4492V9.79922C17.3 9.54922 17.5 9.34922 17.75 9.34922H19.75L20.8 11.8992ZM16.65 3.99922C17.3 3.99922 17.8 4.49922 17.8 5.14922V5.34922H15.5V5.14922C15.5 4.49922 16 3.99922 16.65 3.99922ZM5.05 6.54922L13.55 12.0492V14.5992H10.9L5.05 6.54922ZM6.65 20.4492C6 20.4492 5.45 19.8992 5.45 19.2492C5.45 18.5992 6 18.0492 6.65 18.0492C7.3 18.0492 7.85 18.5992 7.85 19.2492C7.85 19.8992 7.3 20.4492 6.65 20.4492ZM18 20.4492C17.35 20.4492 16.8 19.8992 16.8 19.2492C16.8 18.5992 17.35 18.0492 18 18.0492C18.65 18.0492 19.2 18.5992 19.2 19.2492C19.2 19.8992 18.65 20.4492 18 20.4492ZM20.7 18.5992H20.4C20.1 17.5492 19.15 16.7492 18 16.7492C16.85 16.7492 15.9 17.5492 15.6 18.5992H9.05C8.75 17.5492 7.8 16.7492 6.65 16.7492C5.5 16.7492 4.55 17.4992 4.25 18.5492H2.95C2.7 18.5492 2.5 18.3492 2.5 18.0992V17.2992C2.5 17.0992 2.65 16.9492 2.85 16.8992L8.8 15.8992H14.2C14.55 15.8992 14.85 15.5992 14.85 15.2492V7.09922C14.85 6.84922 15.05 6.64922 15.3 6.64922H18.4C18.55 6.64922 18.75 6.74922 18.8 6.94922L19.25 8.04922H17.75C16.8 8.04922 16 8.84922 16 9.79922V11.4492C16 12.3992 16.8 13.1992 17.75 13.1992H21.15V18.1492C21.15 18.3992 20.95 18.5992 20.7 18.5992Z')),
+      infortunio: _s(_p('M12.0005 2.5C13.8414 2.50015 15.3003 3.95889 15.3003 5.7998M12.0005 2.5C13.8093 2.50016 15.3003 3.99092 15.3003 5.7998M12.0005 2.5C10.1915 2.5 8.70068 3.99082 8.70068 5.7998C8.70068 3.95879 10.1595 2.5 12.0005 2.5ZM15.3003 5.7998C15.3002 7.64063 13.8413 9.09945 12.0005 9.09961M15.3003 5.7998C15.3002 7.6086 13.8093 9.09945 12.0005 9.09961M12.0005 9.09961C10.2169 9.09961 8.79174 7.7302 8.70459 5.9707V5.96777C8.79352 7.70008 10.2479 9.09961 12.0005 9.09961ZM8.01709 18.2793C8.00725 18.3522 8.0005 18.4261 8.00049 18.501C8.0005 18.4254 8.00679 18.3516 8.01709 18.2793ZM11.9497 12.001H12.0503C13.3892 12.001 14.719 12.1345 16.0005 12.4365V12.4502L15.4565 12.3604C14.5335 12.2065 13.6099 12.1031 12.686 12.0518L12.0005 12.0137V12.0225L11.3218 12.0518C10.1383 12.1032 8.95288 12.2569 7.81592 12.5146C5.59669 12.9819 4.00049 15.0636 4.00049 17.3516C4.00049 14.9918 5.60219 12.9677 7.78955 12.4863L7.79834 12.4844L7.80811 12.4814C9.14823 12.1465 10.5441 12.001 11.9497 12.001ZM16.3315 12.5205C18.3911 13.1073 19.8242 14.8765 19.9839 16.9619C19.8336 15.0999 18.6172 13.4488 16.895 12.749L16.3315 12.5205Z')),
+      tutela: _img('TutelaLegale'),
+      doc: _s(_p('M8.00039 16.9992H16.0004M8.00039 13.0008H16.0004M19 9H12.5C12.2 9 11.9 8.8 11.7 8.6L10.3 6.5C10.1 6.2 9.8 6 9.5 6H5M19 9C20.1 9 21 9.9 21 11V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V8C3 6.9 3.9 6 5 6M19 9L19.0004 5C19.0004 3.9 18.1004 3 17.0004 3H7.00039C5.90039 3 5.00039 3.9 5.00039 5L5 6')),
+      manut: _f(_p('M21.5496 4.80039C21.2496 4.70039 20.9496 4.60039 20.5996 4.45039L18.3496 3.30039C15.9496 2.10039 13.0996 2.10039 10.6996 3.30039C9.5996 3.90039 8.6496 4.50039 7.7996 5.20039C6.2996 5.20039 4.7996 5.35039 3.3496 5.70039C2.0496 6.05039 1.1496 7.35039 1.3496 8.70039L1.6996 10.9504C1.8996 12.0004 2.7996 12.7004 3.8496 12.7004H4.6996C5.1496 13.3004 5.8496 13.7004 6.6496 13.7004C7.4496 13.7004 8.1496 13.3004 8.5996 12.7004H15.3996C15.8496 13.3004 16.5496 13.7004 17.3496 13.7004C18.1496 13.7004 18.8496 13.3004 19.2996 12.7004H20.4996C21.6996 12.7004 22.6496 11.7504 22.6496 10.5504V6.40039C22.6496 5.65039 22.1996 5.05039 21.5496 4.80039ZM6.6496 12.3504C6.0496 12.3504 5.5496 11.8504 5.5496 11.2504C5.5496 10.6504 6.0496 10.1504 6.6496 10.1504C7.2496 10.1504 7.7496 10.6504 7.7496 11.2504C7.7496 11.8504 7.2496 12.3504 6.6496 12.3504ZM17.3496 12.3504C16.7496 12.3504 16.2496 11.8504 16.2496 11.2504C16.2496 10.6504 16.7496 10.1504 17.3496 10.1504C17.9496 10.1504 18.4496 10.6504 18.4496 11.2504C18.4496 11.8504 17.9496 12.3504 17.3496 12.3504ZM21.3496 10.5004C21.3496 11.0004 20.9996 11.3504 20.4996 11.3504H19.7496C19.7496 11.3004 19.7496 11.3004 19.7496 11.2504C19.7496 9.95039 18.6496 8.85039 17.3496 8.85039C16.0496 8.85039 14.9496 9.95039 14.9496 11.2504C14.9496 11.3004 14.9496 11.3004 14.9496 11.3504H9.0496C9.0496 11.3004 9.0496 11.3004 9.0496 11.2504C9.0496 9.95039 7.9496 8.85039 6.6496 8.85039C5.3496 8.85039 4.2496 9.95039 4.2496 11.2504C4.2496 11.3004 4.2496 11.3004 4.2496 11.3504H3.8496C3.4496 11.3504 3.0996 11.0504 2.9996 10.6504L2.6496 8.45039C2.5496 7.80039 2.9996 7.10039 3.6496 6.95039C5.0996 6.60039 6.5496 6.45039 8.0496 6.50039C8.1996 6.50039 8.3996 6.45039 8.4996 6.35039C9.2996 5.65039 10.1996 5.00039 11.2996 4.45039C13.2996 3.45039 15.7496 3.45039 17.7496 4.45039L19.9996 5.60039C20.3996 5.80039 20.7496 5.95039 21.0996 6.05039C21.1996 6.10039 21.3496 6.20039 21.3496 6.40039V10.5004Z', 'M20.0005 20.3496H14.6505V16.6496H18.0005C18.3505 16.6496 18.6505 16.3496 18.6505 15.9996C18.6505 15.6496 18.3505 15.3496 18.0005 15.3496H7.00049C6.65049 15.3496 6.35049 15.6496 6.35049 15.9996C6.35049 16.3496 6.65049 16.6496 7.00049 16.6496H10.3505V20.3496H5.00049C4.65049 20.3496 4.35049 20.6496 4.35049 20.9996C4.35049 21.3496 4.65049 21.6496 5.00049 21.6496H20.0005C20.3505 21.6496 20.6505 21.3496 20.6505 20.9996C20.6505 20.6496 20.3505 20.3496 20.0005 20.3496ZM11.6505 16.6496H13.3505V20.3496H11.6505V16.6496Z')),
+      settings: _s(_p('M12.8003 3.00117C13.2003 3.00117 13.6003 3.25117 13.7503 3.65117L14.2503 5.05117C14.3503 5.25117 14.5003 5.45117 14.7003 5.60117L16.2003 6.45117C16.4003 6.55117 16.6503 6.60117 16.9003 6.55117L18.4003 6.30117C18.8003 6.25117 19.2503 6.40117 19.4503 6.80117L20.2503 8.20117C20.4503 8.55117 20.4003 9.00117 20.1503 9.35117L19.1003 10.5012C18.9503 10.7012 18.8503 10.9012 18.8503 11.1512V12.9012C18.8503 13.1512 18.9503 13.3512 19.1003 13.5512L20.0503 14.7012C20.3003 15.0012 20.3503 15.5012 20.1503 15.8512L19.3503 17.2512C19.1503 17.6012 18.7003 17.8012 18.3003 17.7512L16.8003 17.5012C16.5503 17.4512 16.3503 17.5012 16.1003 17.6012L14.6003 18.4512C14.4003 18.5512 14.2503 18.7512 14.1503 19.0012L13.6503 20.4012C13.5003 20.8012 13.1503 21.0512 12.7003 21.0512H11.1003C10.7003 21.0512 10.3003 20.8012 10.1503 20.4012L9.65026 19.0012C9.55026 18.8012 9.40026 18.6012 9.20026 18.4512L7.70026 17.6012C7.50026 17.5012 7.25026 17.4512 7.00026 17.5012L5.50026 17.7512C5.10026 17.8012 4.65026 17.6512 4.45026 17.2512L3.65026 15.8512C3.45026 15.5012 3.50026 15.0512 3.75026 14.7012L4.90026 13.5012C5.05026 13.3012 5.15026 13.1012 5.15026 12.8512V11.1012C5.15026 10.8512 5.05026 10.6512 4.90026 10.4512L3.95026 9.30117C3.70026 9.00117 3.65026 8.50117 3.85026 8.15117L4.65026 6.75117C4.85026 6.40117 5.30026 6.20117 5.70026 6.25117L7.20026 6.50117C7.45026 6.55117 7.65026 6.50117 7.90026 6.40117L9.40026 5.55117C9.60026 5.45117 9.75026 5.25117 9.85026 5.00117L10.3503 3.60117C10.5003 3.20117 10.8503 2.95117 11.3003 2.95117H12.8003V3.00117Z', 'M11.9997 14.7512C13.5185 14.7512 14.7497 13.52 14.7497 12.0012C14.7497 10.4824 13.5185 9.25117 11.9997 9.25117C10.4809 9.25117 9.24971 10.4824 9.24971 12.0012C9.24971 13.52 10.4809 14.7512 11.9997 14.7512Z'), '1.3', 'stroke-miterlimit="10"'),
+      telematica: _s(_p('M3 3V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21H21M18 17V9M12.9996 16.9992V4.99922M8.00039 16.9992V13.9992'), '1.296'),
+      car: _s(_p('M8.25 14H5.75M18.25 14H15.75M22 9L19.4 10L18.55 6C18.3 4.85 17.3 4 16.1 4H8C6.85 4 5.85 4.8 5.55 5.95L4.65 10L2 9M3.25 20H5.5C6.35 20 7 19.35 7 18.5V17.5H17V18.5C17 19.35 17.65 20 18.5 20H20.75C21.45 20 22 19.45 22 18.75V13C22 11.35 20.65 10 19 10H5C3.35 10 2 11.35 2 13V18.75C2 19.45 2.55 20 3.25 20Z')),
+      headset: _s(_p('M6.54982 11.95C6.19982 11.15 5.99982 10.25 5.99982 9.29999C5.99982 5.29999 9.59982 2.04999 13.9998 2.04999C18.3998 2.04999 21.9998 5.24999 21.9998 9.29999C21.9998 11.65 20.7498 13.75 18.7998 15.1C18.7998 15.85 18.7998 16.9 18.7998 17.95L15.6498 16.4C15.0998 16.5 14.5498 16.55 13.9998 16.55C13.2998 16.55 12.5998 16.45 11.9498 16.3M2.19983 16.85C2.19983 14.15 4.39983 11.95 7.09983 11.95C9.79983 11.95 11.9998 14.15 11.9998 16.85C11.9998 19.55 9.79983 21.75 7.09983 21.75C6.34983 21.75 5.6498 21.6 5.0498 21.3L2.0498 21.95L2.6998 18.95C2.3998 18.3 2.2498 17.6 2.2498 16.9')),
+      truck: '<svg viewBox="33.66 3697.02 17.90 17.97" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M48.6943 3703.99V3702.88C48.6943 3702.29 48.3778 3701.75 47.8584 3701.46L42.5831 3698.53C42.0962 3698.26 41.4956 3698.26 41.0087 3698.53L35.7335 3701.46C35.2222 3701.75 34.8976 3702.29 34.8976 3702.88V3712.13H38.9554V3706.45H41.3901" stroke="currentColor" stroke-width="1.05504" stroke-linecap="round" stroke-linejoin="round"/><path d="M47.8827 3712.53H44.6364V3712.94C44.6364 3713.38 44.2712 3713.75 43.8248 3713.75H43.0133C42.5669 3713.75 42.2017 3713.38 42.2017 3712.94V3711.52C42.2017 3710.73 42.8347 3710.1 43.622 3710.1H48.8972C49.6844 3710.1 50.3174 3710.73 50.3174 3711.52V3712.94C50.3174 3713.38 49.9522 3713.75 49.5058 3713.75H48.6943C48.2479 3713.75 47.8827 3713.38 47.8827 3712.94V3712.53Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M43.1269 3710.2L43.5895 3708.2C43.7193 3707.65 44.2063 3707.26 44.7744 3707.26H47.7366C48.3047 3707.26 48.7917 3707.65 48.9215 3708.2L49.3841 3710.2" stroke="currentColor" stroke-width="1.05504" stroke-linecap="round" stroke-linejoin="round"/><path d="M43.2081 3709.79L42.2017 3709.29" stroke="currentColor" stroke-width="1.05504" stroke-linecap="round" stroke-linejoin="round"/><path d="M49.3111 3709.79L50.3174 3709.29" stroke="currentColor" stroke-width="1.05504" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      phone: _s(_p('M8.00049 21H7.00049C5.90049 21 5.00049 20.1 5.00049 19V5C5.00049 3.9 5.90049 3 7.00049 3H15.0005C16.1005 3 17.0005 3.9 17.0005 5V7M13.4996 3V5C13.4996 5.3 13.2996 5.5 12.9996 5.5H8.99961C8.69961 5.5 8.49961 5.3 8.49961 5V3M12.9996 16.0008L12.3996 15.4008C11.7996 14.8008 10.9996 14.8008 10.3996 15.4008C9.89955 15.9008 9.79955 16.6008 10.1996 17.2008L12.0996 20.1008C12.4996 20.7008 13.0996 21.0008 13.7996 21.0008H17.5996C18.5996 21.0008 19.4996 20.2008 19.5996 19.2008L19.9996 16.3008C20.0996 15.2008 19.3996 14.3008 18.2996 14.1008L15.9996 13.8008V11.5008C15.9996 10.7008 15.2996 10.0008 14.4996 10.0008C13.6996 10.0008 12.9996 10.7008 12.9996 11.5008V16.0008Z')),
+      user: '<svg viewBox="43.34 980.95 18.83 15.18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M56.4854 994.824C55.5115 994.094 54.213 993.607 52.7521 993.607C51.2913 993.607 49.9928 994.094 49.0189 994.824" stroke="currentColor" stroke-width="1.05504" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M44.6364 989.792C45.448 989.143 46.6653 988.737 47.8827 988.737" stroke="currentColor" stroke-width="1.05504" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M48.2885 986.303C49.409 986.303 50.3174 985.394 50.3174 984.274C50.3174 983.153 49.409 982.245 48.2885 982.245C47.1679 982.245 46.2596 983.153 46.2596 984.274C46.2596 985.394 47.1679 986.303 48.2885 986.303Z" stroke="currentColor" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M57.6216 988.737C58.8389 988.737 60.0563 989.143 60.8678 989.792" stroke="currentColor" stroke-width="1.05504" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M57.2158 986.303C58.3363 986.303 59.2447 985.394 59.2447 984.274C59.2447 983.153 58.3363 982.245 57.2158 982.245C56.0952 982.245 55.1868 983.153 55.1868 984.274C55.1868 985.394 56.0952 986.303 57.2158 986.303Z" stroke="currentColor" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M52.7521 991.172C53.8727 991.172 54.7811 990.264 54.7811 989.143C54.7811 988.023 53.8727 987.114 52.7521 987.114C51.6316 987.114 50.7232 988.023 50.7232 989.143C50.7232 990.264 51.6316 991.172 52.7521 991.172Z" stroke="currentColor" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      bulb: I.bulb,
+      check: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M5 12.5l4.5 4.5L19 7"/></svg>',
+      checkCircle: _s(_p('M16 10L11 15L8 12M12 21C7 21 3 17 3 12C3 7 7 3 12 3C17 3 21 7 21 12C21 17 17 21 12 21Z')),
+    };
+
+    /* ===== Card producto ===== */
+    (function renderCard() {
+      const deliver = car.fastDelivery ? `<span class="tag tag-deliver">Consegna a ${car.deliveryEta} giorni</span>` : '';
+      const promo = car.promo ? `<div class="mcard-promotag">Promozione</div>` : '';
+      const usato = car.secondhand ? `<div class="pcard-usato"><span class="icon">${I.refresh}</span>Usato garantito</div>` : '';
+      document.getElementById('pcard').innerHTML = `
+        <div class="pcard${car.promo ? ' promo' : ''}">
+          ${promo}
+          <div class="pcard-tagrow">${deliver}</div>
+          <div class="pcard-img"><img src="${car.image}" alt="${car.brand} ${car.name}"></div>
+          <div class="pcard-repr"><span class="icon">${I.info}</span>L'immagine è puramente rappresentativa</div>
+          ${usato}
+          <div class="pcard-title">
+            <span class="kicker">Noleggio a lungo termine</span>
+            <span class="name">${car.brand} ${car.name}</span>
+            <span class="version">${car.modification}</span>
+          </div>
+          <div class="pcard-colors"><div class="lbl">Colori disponibili</div>
+            <div class="vals">Bianco, Nero, Grigio, Blu, Rosso</div></div>
+        </div>`;
+    })();
+
+    /* ===== Estado / config ===== */
+    const DURATE = [24, 36, 48, 60];
+    const ANTICIPI = [0, 1000, 2000, 3000, 5000];
+    const KMS = [10000, 15000, 20000, 25000, 30000];
+    const TIPORATA = [['ppu', 'Pay per Use'], ['fissa', 'Rata fissa']];
+    const AUTOSOST = [['no', 'Nessuna'], ['si', 'Sì, +19 €/mese']];
+    if (!ANTICIPI.includes(car.advance)) { ANTICIPI.push(car.advance); ANTICIPI.sort((a, b) => a - b); }
+    const cfg = {
+      formula: isPPU ? 'ppu' : 'broker',
+      durata: DURATE.includes(+car.duration) ? +car.duration : 36,
+      anticipo: car.advance, km: 10000, gomme: true, autoSost: 'no',
+    };
+    const base = { durata: +car.duration, anticipo: car.advance, km: 10000 };
+    const fmtMesi = v => `${v} mesi`, fmtEur = v => `${eur0(v)}€`, fmtKm = v => `${eur0(v)} km`;
+    const labelOf = (pairs, v) => (pairs.find(p => p[0] === v) || ['', ''])[1];
+
+    /* ===== Calcola: campos ===== */
+    const numField = (id, label, value, options, fmt, hint) => `
+      <div class="m-field">
+        <label for="${id}">${label}</label>
+        <div class="m-select">
+          <span class="m-select-val" id="${id}-val">${fmt(value)}</span>
+          <span class="icon">${I.chevronDown}</span>
+          <select id="${id}">${options.map(o => `<option value="${o}"${o === value ? ' selected' : ''}>${fmt(o)}</option>`).join('')}</select>
+        </div>
+        ${hint ? `<div class="m-hint"><span class="icon">${I.bulb}</span><span>${hint}</span></div>` : ''}
+      </div>`;
+    const pairField = (id, label, value, pairs, hint, dim) => `
+      <div class="m-field">
+        <label for="${id}">${label}</label>
+        <div class="m-select">
+          <span class="m-select-val${dim && value === dim ? ' is-dim' : ''}" id="${id}-val">${labelOf(pairs, value)}</span>
+          <span class="icon">${I.chevronDown}</span>
+          <select id="${id}">${pairs.map(p => `<option value="${p[0]}"${p[0] === value ? ' selected' : ''}>${p[1]}</option>`).join('')}</select>
+        </div>
+        ${hint ? `<div class="m-hint"><span class="icon">${I.bulb}</span><span>${hint}</span></div>` : ''}
+      </div>`;
+    const toggleRow = (id, label, sub, on, hint) => `
+      <div class="m-field">
+        <div class="toggle-row">
+          <div><div class="tr-t">${label}</div><div class="tr-s">${sub}</div></div>
+          <button type="button" class="switch" role="switch" aria-checked="${on}" id="${id}"></button>
+        </div>
+        ${hint ? `<div class="m-hint"><span class="icon">${I.bulb}</span><span>${hint}</span></div>` : ''}
+      </div>`;
+    const setVal = (id, txt) => { const el = document.getElementById(id + '-val'); if (el) el.textContent = txt; };
+
+    function buildFields() {
+      const f = document.getElementById('fields');
+      if (isPPU) {
+        f.innerHTML =
+          pairField('f-rata', 'Tipo di rata', cfg.formula, TIPORATA,
+            "<span class='hl'><b>Pay per use:</b> Con la formula Pay per Use - a consumo - hai la massima flessibilità: paghi una quota fissa ridotta e una tariffa variabile basata sui chilometri percorsi.</span><span class='hl'><b>Rata fissa:</b> Con la formula a rata fissa - hai il prezzo bloccato una quota fissa ogni mese, indipendentemente dai chilometri. Ideale se viaggi spesso o non vuoi pensieri.</span>") +
+          numField('f-durata', 'Durata', cfg.durata, DURATE, fmtMesi, '') +
+          numField('f-anticipo', 'Anticipo', cfg.anticipo, ANTICIPI, fmtEur, "Più alto l'anticipo, più basso il canone.") +
+          toggleRow('f-gomme', 'Cambio gomme', '30 €/mese iva incl.', cfg.gomme,
+            'Gomme pronte per ogni stagione, con deposito incluso. Il costo cambia in base al modello che hai scelto.') +
+          pairField('f-autosost', 'Auto sostitutiva', cfg.autoSost, AUTOSOST,
+            "Se la tua auto resta ferma più di 8 ore per guasto, tagliando o riparazione, te ne diamo un'altra. Così non ti fermi mai.", 'no');
+      } else {
+        f.innerHTML =
+          numField('f-durata', 'Durata', cfg.durata, DURATE, fmtMesi, '') +
+          numField('f-anticipo', 'Anticipo', cfg.anticipo, ANTICIPI, fmtEur, "Più alto l'anticipo, più basso il canone. Anche anticipo zero.") +
+          numField('f-km', 'Chilometri inclusi', cfg.km, KMS, fmtKm, 'Stima i km che percorri in un anno. In dubbio? Scegli 15.000.');
+      }
+      const on = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('change', fn); };
+      on('f-durata', e => { cfg.durata = +e.target.value; setVal('f-durata', fmtMesi(cfg.durata)); renderBar(); });
+      on('f-anticipo', e => { cfg.anticipo = +e.target.value; setVal('f-anticipo', fmtEur(cfg.anticipo)); renderBar(); });
+      on('f-km', e => { cfg.km = +e.target.value; setVal('f-km', fmtKm(cfg.km)); renderBar(); });
+      on('f-rata', e => { cfg.formula = e.target.value; setVal('f-rata', labelOf(TIPORATA, cfg.formula)); renderBar(); });
+      on('f-autosost', e => {
+        cfg.autoSost = e.target.value;
+        const v = document.getElementById('f-autosost-val');
+        v.textContent = labelOf(AUTOSOST, cfg.autoSost); v.classList.toggle('is-dim', cfg.autoSost === 'no');
+        renderBar();
+      });
+      const g = document.getElementById('f-gomme');
+      if (g) g.addEventListener('click', () => { cfg.gomme = g.getAttribute('aria-checked') !== 'true'; g.setAttribute('aria-checked', cfg.gomme); renderBar(); });
+    }
+    buildFields();
+
+    document.getElementById('breadcrumb').innerHTML =
+      `<a href="m-catalogo.html">Noleggio a lungo termine</a><span class="icon">${I.chevron}</span>` +
+      `<span>${car.brand}</span><span class="icon">${I.chevron}</span><span>${car.name}</span>`;
+
+    /* ===== Cálculo del canone ===== */
+    function canone() {
+      let c = (cfg.formula === 'ppu') ? car.priceFix : car.priceFlat;
+      c -= (cfg.anticipo - base.anticipo) / 1000 * 7;       // +anticipo → -canone
+      c += (base.durata - cfg.durata) / 12 * 10;            // durata corta → +canone
+      if (!isPPU) c += (cfg.km - base.km) / 5000 * 18;      // broker: +km → +canone
+      if (isPPU && cfg.gomme) c += 30;                      // add-on cambio gomme
+      if (isPPU && cfg.autoSost === 'si') c += 19;          // add-on auto sostitutiva
+      return Math.max(Math.round(c), 49);
+    }
+    const perKm = () => (cfg.formula === 'ppu' && isPPU) ? car.priceVariable : null;
+
+    /* ===== Pricing bar (compartida con el riepilogo) ===== */
+    function ctaHref() {
+      const km = perKm();
+      const q = `id=${encodeURIComponent(car.slug)}&formula=${cfg.formula}&durata=${cfg.durata}&anticipo=${cfg.anticipo}&km=${cfg.km}&gomme=${cfg.gomme ? 1 : 0}&autosost=${cfg.autoSost}&canone=${canone() - discount()}${km != null ? '&perkm=' + km : ''}`;
+      return `m-preventivo.html?${q}`;
+    }
+    const discount = () => (car.promo && car.label ? (car.label.discount || 0) : 0);
+    function pbInner(withToggle) {
+      const full = canone(), disc = discount(), shown = full - disc, km = perKm();
+      const strike = disc ? `<span class="pb-strike">${monthly(full)}</span>` : '';
+      const promoTag = disc ? `<span class="pb-promo">${car.label.description || 'Prezzo promo'}</span>` : '';
+      const meseBlock = `<div class="pb-price"><span class="num">${monthly(shown)}</span>
+        <span class="unit"><span class="cur"><b>€</b><span>/mese</span></span><small>iva incl.</small></span></div>`;
+      const kmBlock = km != null ? `<span class="pb-plus icon">${I.plus}</span>
+        <div class="pb-price"><span class="num">${money(km)}</span>
+        <span class="unit"><span class="cur"><b>€</b><span>/km</span></span><small>iva incl.</small></span></div>` : '';
+      return `${withToggle ? `<button class="pricebar-toggle" id="pb-toggle">Mostra dettagli <span class="icon">${I.expand}</span></button>` : ''}
+        <div class="pb-row"><div class="pb-col">${strike}${meseBlock}</div>${kmBlock}</div>
+        ${promoTag}
+        <a class="pb-cta">Richiedi preventivo</a>
+        <p class="pb-note">Il prezzo visualizzato è un prezzo stimato</p>`;
+    }
+    function renderBar() {
+      document.getElementById('pricebar').innerHTML = pbInner(true);
+      document.querySelectorAll('#pricebar .pb-cta').forEach(a => a.href = ctaHref());
+      syncBarSpace();
+    }
+    function syncBarSpace() {
+      const bar = document.getElementById('pricebar'), footer = document.querySelector('.app .m-footer');
+      if (bar && footer) footer.style.paddingBottom = (bar.offsetHeight + 40) + 'px';
+    }
+    window.addEventListener('resize', syncBarSpace);
+    window.addEventListener('load', syncBarSpace);
+
+    /* ===== Cosa include (datos compartidos con el riepilogo) ===== */
+    const incTitle = `Cosa include il noleggio a lungo termine di ${car.brand} ${car.name}`;
+    const PPU_COVER = [
+      [ICON.car, 'RC Auto con guida libera e assenza di rivalsa', 'Franchigia: 0€', 'Generali'],
+      [ICON.furto, 'Furto e incendio', 'Franchigia: 0€', 'Generali'],
+      [ICON.danni, 'Danni auto', 'Franchigia: 0€', 'Generali'],
+      [ICON.soccorso, 'Assistenza e soccorso stradale', 'Franchigia: 0€', 'Generali'],
+      [ICON.infortunio, 'Infortunio del conducente', 'Franchigia: 10% invalidità', 'AIG'],
+      [ICON.tutela, 'Tutela legale e perdite pecuniarie', '', 'Vittoria'],
+    ];
+    const PPU_SERVIZI = [
+      [ICON.doc, 'Immatricolazione e Gestione Bollo*'],
+      [ICON.manut, 'Manutenzione ordinaria e straordinaria'],
+      [ICON.settings, 'Gestione sinistri e multe'],
+      [ICON.headset, 'Customers care dedicato'],
+      [ICON.telematica, 'Telematica'],
+      [ICON.truck, 'Consegna a domicilio'],
+      [ICON.doc, 'Gestione voltura'],
+      [ICON.phone, "Un'app mobile che ti consente di avere tanti altri servizi di mobilità"],
+      [ICON.user, 'Invita un amico e risparmi 200€ sul tuo noleggio'],
+    ];
+    const BROKER_INC = [
+      [ICON.shield, 'RC Auto', ['Massimale: 26.000.000€', 'Franchigia 250€ per sinistro con torto']],
+      [ICON.furto, 'Furto e incendio', ['Incendio e Furto Parziale: 250€ /evento', 'Furto totale: Penale 10% valore del veicolo']],
+      [ICON.danni, 'Danni auto', ['Penale: 500€ /evento']],
+      [ICON.soccorso, 'Soccorso stradale', []],
+      [ICON.infortunio, 'Infortunio del conducente', ['Morte/invalidità permanente: Massimale 150.000 € (franchigia 3%)', 'Spese mediche: Massimale 7.000€']],
+      [ICON.tutela, 'Tutela legale', ['Massimale: € 15.000']],
+      [ICON.doc, 'Immatricolazione e Gestione Bollo *', []],
+      [ICON.manut, 'Manutenzione ordinaria e straordinaria', []],
+      [ICON.settings, 'Gestione sinistri e multe', []],
+      [ICON.telematica, 'Telematica', []],
+    ];
+    function renderInclude() {
+      const el = document.getElementById('include');
+      if (isPPU) {
+        el.innerHTML =
+          `<button class="inc-head" type="button">
+            <span class="inc-title">${incTitle}</span><span class="icon inc-chev">${I.chevronDown}</span>
+          </button>
+          <div class="inc-body ppu">
+            <div class="inc-partner">
+              <p class="ph">Coperture principali sottoscritte con</p>
+              <div class="pm"><span class="icon">${ICON.shield}</span>Generali</div>
+              <p class="ps">e con il supporto di AIG e Vittoria Assicurazioni per coperture specifiche</p>
+            </div>
+            <div class="inc-group"><h4 class="inc-gh">Coperture assicurative</h4>
+              ${PPU_COVER.map(([ic, t, fr, pt]) => `<div class="cov-item"><span class="icon">${ic}</span>
+                <div><div class="cov-t">${t}${pt ? ` <span class="cov-badge ${pt === 'Generali' ? 'red' : 'grey'}">${pt}</span>` : ''}</div>${fr ? `<div class="cov-s">${fr}</div>` : ''}</div></div>`).join('')}
+            </div>
+            <div class="inc-group">
+              <div class="inc-flee-head"><span class="inc-flee-logo">${MF.LOGO}</span><h4 class="inc-gh">Servizi inclusi solo su Flee</h4></div>
+              ${PPU_SERVIZI.map(([ic, t]) => `<div class="srv-item"><span class="icon">${ic}</span><span>${t}</span></div>`).join('')}
+            </div>
+            <p class="inc-foot"><span>*</span><span>Per legge (D.L. 124/2019), bollo e superbollo li paghi tu. Possiamo occuparcene noi al posto tuo: basta il tuo ok.</span></p>
+          </div>`;
+      } else {
+        el.innerHTML =
+          `<button class="inc-head" type="button">
+            <span class="inc-title">${incTitle}</span><span class="icon inc-chev">${I.chevronDown}</span>
+          </button>
+          <div class="inc-body">
+            ${BROKER_INC.map(([ic, t, subs]) => `<div class="inc-item"><span class="icon">${ic}</span>
+              <div><div class="inc-t">${t}</div>${subs.map(s => `<div class="inc-s">${s}</div>`).join('')}</div></div>`).join('')}
+            <p class="inc-foot"><span>*</span><span>Per legge (D.L. 124/2019), bollo e superbollo li paghi tu. Possiamo occuparcene noi al posto tuo: basta il tuo ok.</span></p>
+          </div>`;
+      }
+    }
+    renderInclude();
+
+    /* ===== Allestimento (specs) ===== */
+    document.getElementById('allest-title').textContent =
+      `Noleggio ${car.brand} ${car.name} ${car.modification}: perché sceglierla con Flee`;
+    const specRows = [
+      ['Alimentazione', car.fuel], ['Cambio', car.gearbox], ['Potenza', `${car.power} CV`],
+      ['Cilindrata', `${eur0(car.displacement)} cc`], ['Posti', car.seats], ['Porte', car.doors],
+    ];
+    document.getElementById('specs').innerHTML =
+      accordion('Scheda tecnica', `${car.brand} ${car.name} ${car.modification}`,
+        `<div class="spec-list">${specRows.map(r => `<div class="row"><span>${r[0]}</span><b>${r[1]}</b></div>`).join('')}</div>`) +
+      accordion('Dimensioni', `${car.brand} ${car.name}`,
+        `<div class="spec-list">
+          <div class="row"><span>Lunghezza</span><b>4.055 mm</b></div>
+          <div class="row"><span>Larghezza</span><b>1.745 mm</b></div>
+          <div class="row"><span>Altezza</span><b>1.430 mm</b></div>
+          <div class="row"><span>Bagagliaio</span><b>311 L</b></div></div>`) +
+      accordion('Equipaggiamenti di serie', '',
+        `<ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px">
+          <li>Climatizzazione</li><li>Sensori di parcheggio</li><li>Cruise control</li>
+          <li>Apple CarPlay & Android Auto</li><li>Cerchi in lega</li></ul>`);
+
+    /* ===== Flee Care (solo PPU) ===== */
+    if (isPPU) {
+      document.getElementById('fleecare-sec').hidden = false;
+      document.getElementById('fleecare').innerHTML = `
+        <div class="fc-card">
+          <div class="fc-head"><span class="icon">${ICON.shield}</span><h3>Flee Care</h3></div>
+          <p class="fc-desc">Entrando a far parte di Flee puoi beneficiare di Flee Care, il pacchetto che protegge i tuoi veicoli personali: auto, moto o scooter. Paghi in pay per use, solo quando li usi e ti godi la guida in tranquillità.</p>
+          <a class="fc-more" href="#">Leggi di più <span class="icon">${I.chevron}</span></a>
+          <div class="fc-divider"></div>
+          <p class="fc-q">Sei interessato a Flee Care?</p>
+          <div class="fc-opt" data-fc="interest"><span class="fc-box"><span class="icon">${ICON.check}</span></span>Sì, mi interessa</div>
+          <p class="fc-q" style="margin-top:8px">Quale veicolo vuoi proteggere?</p>
+          <div class="fc-opt" data-fc="veh" data-v="auto"><span class="fc-radio"></span>Auto</div>
+          <div class="fc-opt" data-fc="veh" data-v="moto"><span class="fc-radio"></span>Moto</div>
+          <div class="fc-opt" data-fc="veh" data-v="ciclo"><span class="fc-radio"></span>Ciclomotore</div>
+          <div class="fc-note"><span class="icon">${I.bulb}</span><p>Se sei interessato a Flee Care, ti contatteremo appena avrai firmato il contratto di noleggio Flee Drive.</p></div>
+        </div>`;
+    }
+
+    /* ===== I vantaggi ===== */
+    if (isPPU) {
+      document.getElementById('vant-title').textContent = 'Perché scegliere il noleggio a lungo termine Flee';
+      document.getElementById('vant-lead').textContent =
+        'Il noleggio a lungo termine con Flee include canone mensile, assicurazione RCA e Kasko senza franchigie, manutenzione ordinaria e straordinaria, soccorso stradale e assistenza dedicata. Puoi scegliere tra canone fisso e formula pay per use, con la possibilità di cambiare in qualsiasi momento.';
+    } else {
+      document.getElementById('vant-title').textContent = `I vantaggi del noleggio a lungo termine ${car.brand} ${car.name}`;
+      document.getElementById('vant-lead').textContent =
+        'Un canone fisso mensile che include assicurazione, manutenzione e assistenza. Nessun costo nascosto.';
+    }
+    const vantaggi = isPPU ? [
+      ['Noleggio a lungo termine pay per use: canone su misura', "Con il noleggio pay per use Flee paghi un canone base più un costo a chilometro, ideale per chi percorre meno di 10.000 km all'anno o ha un utilizzo variabile. In alternativa puoi scegliere il canone fisso mensile, per sapere esattamente quanto spendi ogni mese. Con Flee puoi passare da una formula all'altra anche durante il contratto."],
+      ['Assicurazione auto senza franchigie inclusa nel canone', "Ogni noleggio a lungo termine Flee include una copertura assicurativa completa in partnership con Generali Italia. RC Auto, danni, furto e incendio sono coperti a zero franchigie e zero penali. In caso di sinistro non hai costi imprevisti e non devi anticipare nulla di tasca tua."],
+      ['Assistenza dedicata per tutta la durata del noleggio', "Con Flee hai a disposizione un team di consulenti raggiungibile via app, telefono o email. Che si tratti di un dubbio sul contratto, di un imprevisto stradale o di prenotare un tagliando, parli con qualcuno che conosce il tuo noleggio e la tua auto. Nessun call center generico."],
+      ['Cosa succede a fine noleggio a lungo termine', "Alla scadenza del contratto restituisci l'auto senza penali e senza burocrazia. Non devi preoccuparti di svalutazione, rivendita o passaggio di proprietà. Se vuoi, puoi passare direttamente a un'auto nuova con un nuovo noleggio Flee."],
+    ] : [
+      ['Tutto compreso', 'RCA, Kasko, manutenzione ordinaria e straordinaria, soccorso stradale 24/7. Non gestisci nulla separatamente.'],
+      ['Canone fisso, zero sorprese', 'Il canone che vedi è quello che paghi. Nessun costo nascosto a fine contratto.'],
+      ['Anche anticipo zero', "Puoi partire senza versare nulla all'inizio. Il canone mensile si adegua di conseguenza."],
+      ['Fine contratto senza vincoli', "Alla scadenza scegli tu: restituisci, passi a un'auto nuova o chiedi l'acquisto. Nessuna penale."],
+    ];
+    document.getElementById('vant-list').innerHTML = vantaggi.map(v => `
+      <div class="vant-item"><span class="icon">${ICON.checkCircle}</span>
+        <div><div class="vi-t">${v[0]}</div><div class="vi-d">${v[1]}</div></div></div>`).join('');
+
+    /* ===== helpers / interacción ===== */
+    function accordion(title, subtitle, body) {
+      return `<div class="acard">
+        <button class="acard-head" type="button">
+          <span class="txt"><span class="t">${title}</span>${subtitle ? `<span class="s">${subtitle}</span>` : ''}</span>
+          <span class="icon">${I.chevronDown}</span>
+        </button>
+        <div class="acard-body">${body}</div>
+      </div>`;
+    }
+    /* ===== Riepilogo (overlay "Mostra dettagli") ===== */
+    function renderRiep() {
+      const doorIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M5 21V5a2 2 0 0 1 2-2h7l4 4v14M5 21h15M9 12h.5"/></svg>';
+      const specs = [[ICON.car, car.typology], [doorIcon, `${car.doors} porte`], [MF.I.gear, car.gearbox], [MF.I.fuel, car.fuel]];
+      const rows = isPPU ? [
+        ['Tipologia piano', cfg.formula === 'ppu' ? 'Pay per Use' : 'Rata fissa'],
+        ['Durata', `${cfg.durata} mesi`],
+        ['Chilometri annui', cfg.formula === 'ppu' ? 'A consumo' : eur0(cfg.km)],
+        ['Anticipo', `${eur0(cfg.anticipo)}€ <small>iva incl.</small>`],
+        ['Cambio gomme', cfg.gomme ? 'Sì' : 'No'],
+        ['Auto sostitutiva', cfg.autoSost === 'si' ? 'Sì' : 'Nessuna'],
+      ] : [
+        ['Tipologia piano', 'Fisso'],
+        ['Durata', `${cfg.durata} mesi`],
+        ['Chilometri annui', eur0(cfg.km)],
+        ['Anticipo', `${eur0(cfg.anticipo)}€ <small>iva incl.</small>`],
+      ];
+      const cov = isPPU
+        ? [...PPU_COVER.map(c => [c[0], c[1], c[2] ? [c[2]] : []]), ...PPU_SERVIZI.map(s => [s[0], s[1], []])]
+        : BROKER_INC;
+      const promo = car.promo ? `<div class="mcard-promotag">Promozione</div>` : '';
+      document.getElementById('riep').innerHTML = `
+        <div class="riep-head"><button class="riep-close" type="button">Chiudi <span class="riep-x"><span class="icon">${I.close}</span></span></button></div>
+        <div class="riep-scroll">
+          <div class="riep-card">${promo}
+            <div class="riep-img"><img src="${car.image}" alt="${car.brand} ${car.name}"></div>
+            <div class="riep-repr"><span class="icon">${I.info}</span>L'immagine è rappresentativa</div>
+            <div class="riep-name">${car.brand} ${car.name}</div>
+            <div class="riep-version">${car.modification}</div>
+            <hr class="riep-divider">
+            <div class="riep-specs">${specs.map(([ic, t]) => `<span class="riep-spec"><span class="icon">${ic}</span>${t}</span>`).join('')}</div>
+          </div>
+          <div class="riep-panel" id="riep-cosa">
+            <button class="riep-acc-head" type="button">Cosa è incluso <span class="icon">${I.chevronDown}</span></button>
+            <div class="riep-acc-body">
+              ${cov.map(([ic, t, subs]) => `<div class="riep-ci"><span class="icon">${ic}</span><div><div class="t">${t}</div>${subs.map(s => `<div class="s">${s}</div>`).join('')}</div></div>`).join('')}
+              <p class="riep-foot"><span>*</span><span>Per legge (D.L. 124/2019), bollo e superbollo li paghi tu. Possiamo occuparcene noi al posto tuo: basta il tuo ok.</span></p>
+            </div>
+          </div>
+          <div class="riep-panel riep-summary">
+            <h3>Riepilogo</h3><hr class="riep-divider">
+            <div class="riep-rows">${rows.map(([k, v]) => `<div class="riep-row"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('')}</div>
+          </div>
+          <div class="riep-note">
+            <div class="rn-top"><span class="icon">${I.bulb}</span><p>Prezzo indicativo basato su Roma. Cambia in base alla tua provincia.</p></div>
+            <div class="rn-toggle"><button class="switch" role="switch" aria-checked="true" id="riep-iva"></button>Prezzo iva inclusa</div>
+          </div>
+        </div>
+        <div class="pricebar riep-pricebar">${pbInner(false)}</div>`;
+      document.querySelectorAll('#riep .pb-cta').forEach(a => a.href = ctaHref());
+      document.querySelector('#riep .riep-scroll').scrollTop = 0;
+    }
+    function openRiep() { renderRiep(); document.getElementById('riep').classList.add('open'); document.body.style.overflow = 'hidden'; }
+    function closeRiep() { document.getElementById('riep').classList.remove('open'); document.body.style.overflow = ''; }
+
+    document.addEventListener('click', e => {
+      const head = e.target.closest('.acard-head');
+      if (head) head.parentElement.classList.toggle('open');
+      if (e.target.closest('.inc-head')) document.getElementById('include').classList.toggle('open');
+      if (e.target.closest('.pricebar-toggle')) openRiep();
+      if (e.target.closest('.riep-close')) closeRiep();
+      const ra = e.target.closest('.riep-acc-head');
+      if (ra) ra.closest('.riep-panel').classList.toggle('closed');
+      const iva = e.target.closest('#riep-iva');
+      if (iva) iva.setAttribute('aria-checked', iva.getAttribute('aria-checked') !== 'true');
+      const fc = e.target.closest('.fc-opt');
+      if (fc) {
+        if (fc.dataset.fc === 'interest') fc.classList.toggle('on');
+        else { document.querySelectorAll('.fc-opt[data-fc="veh"]').forEach(o => o.classList.remove('on')); fc.classList.add('on'); }
+      }
+    });
+
+    renderBar();
+  })();
+  </script>
+</body>
+</html>

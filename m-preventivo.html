@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Richiedi preventivo · Flee mobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="flee-library/site.css">
+<link rel="stylesheet" href="m-app.css">
+<style>
+  .app { display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* Stepper (pills) */
+  .p-stepper { flex-shrink: 0; display: flex; align-items: center; gap: 8px; padding: calc(16px + var(--safe-top)) 16px 16px; }
+  .p-pill { display: flex; align-items: center; justify-content: center; gap: 8px; height: 48px; border-radius: 9999px;
+    background: var(--secondary-100); flex: 1; min-width: 48px; transition: all .2s ease; }
+  .p-pill .n { font-size: 14px; font-weight: 400; color: #333; }
+  .p-pill.active { background: var(--ottanio-flee); flex: 0 0 auto; width: auto; padding: 0 16px; }
+  .p-pill.active .n { color: #fff; font-weight: 600; }
+  .p-pill.active .lbl { color: #fff; font-weight: 600; font-size: 14px; line-height: 1.1; }
+
+  /* Panel */
+  .p-panel { flex: 1; padding: 16px 16px 140px; }
+  .p-panel h1 { font-size: 26px; font-weight: 600; line-height: 1.15; color: var(--ottanio-flee); }
+  .p-panel .intro { font-size: 15px; line-height: 1.5; color: var(--ottanio-700); margin-top: 12px; }
+
+  .field { margin-top: 24px; }
+  .field > label { display: block; font-size: 16px; font-weight: 500; color: var(--ottanio-flee); margin-bottom: 10px; }
+  .field .req { color: var(--promo); }
+  .field input, .field select, .field textarea {
+    width: 100%; height: 56px; border: 1px solid var(--card-border); border-radius: 12px; padding: 0 18px;
+    font-family: inherit; font-size: 16px; color: var(--ottanio-flee); background: #fff; transition: border-color .15s ease, box-shadow .15s ease; }
+  .field textarea { height: auto; min-height: 100px; padding: 14px 18px; resize: vertical; }
+  .field input::placeholder, .field textarea::placeholder { color: #879DA6; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--ottanio-flee); box-shadow: 0 0 0 3px rgba(4,81,104,.12); }
+  .field select { appearance: none; -webkit-appearance: none; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'%3E%3Cpath d='M16 10l-4 4-4-4' stroke='%23045168' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 16px center; background-size: 22px; }
+  .field .help { font-size: 13px; line-height: 1.45; color: var(--ottanio-700); margin-top: 8px; }
+
+  /* Dropdown custom (componente DropdownInput) */
+  .dd { position: relative; }
+  .dd-field { width: 100%; height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 0 24px; border: 1px solid var(--card-border); border-radius: 16px; background: #fff; cursor: pointer;
+    font-size: 16px; color: var(--ottanio-flee); text-align: left; transition: border-color .2s ease; }
+  .dd[data-open="true"] .dd-field, .dd-field:focus-visible { border-color: var(--ottanio-flee); outline: none; }
+  .dd-val { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dd-val.is-ph { color: #879da6; }
+  .dd-icon { position: relative; width: 24px; height: 24px; flex-shrink: 0; color: #879da6; transition: transform .2s ease, color .2s ease; }
+  .dd-icon::before { content: ''; position: absolute; top: 46%; left: 50%; width: 7px; height: 7px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translate(-50%, -50%) rotate(45deg); }
+  .dd[data-open="true"] .dd-icon { transform: rotate(180deg); color: var(--ottanio-flee); }
+  .dd[data-filled="true"] .dd-icon { color: var(--ottanio-flee); }
+  .dd-panel { position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 45;
+    max-height: 240px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--ottanio-flee); border-radius: 16px; background: #fff; box-shadow: 0 12px 32px rgba(4,81,104,.18); }
+  .dd-opt { display: flex; align-items: center; width: 100%; min-height: 48px; padding: 0 24px; border: 0;
+    background: var(--secondary-100); color: var(--ottanio-flee); font-size: 16px; text-align: left; cursor: pointer; transition: background-color .2s ease; }
+  .dd-opt:hover, .dd-opt:active { background: var(--card-alt); }
+  .dd-opt.sel { font-weight: 500; }
+
+  .check-row { display: flex; align-items: flex-start; gap: 14px; margin-top: 24px; cursor: pointer; font-size: 14px; line-height: 1.5; color: var(--ottanio-flee); }
+  .check-row input { display: none; }
+  .check-row .box { width: 22px; height: 22px; border: 1.5px solid #9CADB5; border-radius: 6px; flex-shrink: 0; margin-top: 1px;
+    display: flex; align-items: center; justify-content: center; color: #fff; transition: all .15s ease; }
+  .check-row input:checked + .box { background: var(--green-flee); border-color: var(--green-flee); }
+  .check-row .box svg { width: 13px; height: 13px; opacity: 0; }
+  .check-row input:checked + .box svg { opacity: 1; }
+  .check-row a { text-decoration: underline; }
+
+  .radio-group { display: flex; flex-direction: column; gap: 12px; }
+  .radio-opt { display: flex; align-items: center; gap: 12px; border: 1px solid var(--card-border); border-radius: 12px; padding: 16px 18px; cursor: pointer; font-size: 15px; line-height: 1.4; }
+  .radio-opt input { display: none; }
+  .radio-opt .dot2 { width: 20px; height: 20px; border: 2px solid #9CADB5; border-radius: 50%; position: relative; flex-shrink: 0; }
+  .radio-opt input:checked ~ .dot2 { border-color: var(--ottanio-flee); }
+  .radio-opt input:checked ~ .dot2::after { content: ''; position: absolute; inset: 3px; border-radius: 50%; background: var(--ottanio-flee); }
+  .radio-opt:has(input:checked) { border-color: var(--ottanio-flee); background: var(--secondary-100); }
+  .radio-opt > span:last-child { flex: 1; }
+
+  /* Barra de acciones sticky */
+  .p-actions { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; z-index: 40;
+    display: flex; gap: 12px; padding: 12px 16px calc(12px + var(--safe-bottom)); background: #fff; border-top: 1px solid var(--neutral-280); }
+  .p-actions .btn { flex: 1; }
+  .p-actions .btn.is-disabled { opacity: .45; pointer-events: none; }
+
+  /* Chip del coche */
+  .p-carchip { display: flex; align-items: center; gap: 12px; margin-top: 16px; border: 1px solid var(--card-border); border-radius: 16px; padding: 12px 14px; }
+  .p-carchip img { width: 84px; height: 52px; object-fit: contain; flex-shrink: 0; }
+  .p-carchip .t { font-size: 15px; font-weight: 600; color: var(--ottanio-flee); line-height: 1.15; }
+  .p-carchip .s { font-size: 12px; color: var(--ottanio-700); margin-top: 2px; }
+  .p-carchip .pr { margin-left: auto; text-align: right; font-size: 12px; color: var(--ottanio-700); flex-shrink: 0; }
+  .p-carchip .pr b { display: block; font-size: 16px; color: var(--ottanio-flee); }
+</style>
+</head>
+<body>
+  <div class="app">
+    <nav class="p-stepper" id="stepper"></nav>
+    <main class="p-panel" id="panel"></main>
+    <div class="p-actions" id="actions"></div>
+  </div>
+
+  <script src="flee-library/data/cars.js"></script>
+  <script src="m-app.js"></script>
+  <script>
+  (function () {
+    const { carById, kindOf, eur0, monthly, money } = MF;
+    const CHECK = '<svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 7.5L5.5 11L12 3.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+    const params = new URLSearchParams(location.search);
+    const car = carById(params.get('id')) || MF.cars[0];
+    const cfg = {
+      formula: params.get('formula') || kindOf(car),
+      durata: params.get('durata') || car.duration,
+      anticipo: params.get('anticipo') || car.advance,
+      km: params.get('km') || 10000,
+      canone: params.get('canone'),
+      perkm: params.get('perkm'),
+    };
+    const backHref = `m-scheda.html?id=${encodeURIComponent(car.slug)}`;
+
+    const PROVINCE = ['Agrigento','Alessandria','Ancona','Aosta','Arezzo','Ascoli Piceno','Asti','Avellino','Bari','Bergamo','Bologna','Bolzano','Brescia','Cagliari','Caserta','Catania','Como','Cosenza','Cremona','Cuneo','Ferrara','Firenze','Foggia','Genova','La Spezia','Latina','Lecce','Livorno','Lucca','Mantova','Messina','Milano','Modena','Monza e Brianza','Napoli','Novara','Padova','Palermo','Parma','Pavia','Perugia','Pescara','Piacenza','Pisa','Prato','Ravenna','Reggio Calabria','Reggio Emilia','Rimini','Roma','Salerno','Sassari','Siena','Siracusa','Taranto','Torino','Trento','Treviso','Trieste','Udine','Varese','Venezia','Verona','Vicenza','Viterbo'];
+
+    const STEPS = [
+      { title: 'Cosa ci dici di te?', heading: 'Qualche dato su di te' },
+      { title: 'Del tuo lavoro?', heading: 'Qualche dato sul tuo lavoro' },
+      { title: 'E sul noleggio?', heading: 'Qualcosa sul tuo noleggio' },
+      { title: 'Invia la richiesta', heading: 'Invia la richiesta' },
+    ];
+
+    const data = {};
+    let step = 0;
+
+    function renderStepper() {
+      document.getElementById('stepper').innerHTML = STEPS.map((s, i) => {
+        const active = i === step;
+        return `<div class="p-pill${active ? ' active' : ''}"><span class="n">${i + 1}</span>${active ? `<span class="lbl">${s.title}</span>` : ''}</div>`;
+      }).join('');
+    }
+
+    function field(name, label, opts = {}) {
+      const req = opts.required ? ' <span class="req">*</span>' : '';
+      let control;
+      if (opts.type === 'select') {
+        const sel = data[name];
+        const esc = s => String(s).replace(/"/g, '&quot;');
+        control = `<div class="dd" data-dd="${name}" data-open="false" data-filled="${sel ? 'true' : 'false'}"${opts.rerender ? ' data-rerender="1"' : ''}>
+          <input type="hidden" name="${name}" data-req="${!!opts.required}" value="${sel ? esc(sel) : ''}">
+          <button type="button" class="dd-field">
+            <span class="dd-val${sel ? '' : ' is-ph'}">${sel || "Scegli un'opzione"}</span>
+            <span class="dd-icon" aria-hidden="true"></span>
+          </button>
+          <div class="dd-panel" hidden>
+            ${opts.options.map(o => `<button type="button" class="dd-opt${sel === o ? ' sel' : ''}" data-val="${esc(o)}">${o}</button>`).join('')}
+          </div>
+        </div>`;
+      } else if (opts.type === 'textarea') {
+        control = `<textarea name="${name}" placeholder="${opts.ph || ''}" data-req="${!!opts.required}">${data[name] || ''}</textarea>`;
+      } else {
+        control = `<input type="${opts.type || 'text'}" name="${name}" placeholder="${opts.ph || ''}" value="${data[name] || ''}" data-req="${!!opts.required}">`;
+      }
+      return `<div class="field" data-field="${name}"><label>${label}${req}</label>${control}` +
+        (opts.help ? `<p class="help">${opts.help}</p>` : '') + `</div>`;
+    }
+
+    function radioGroup(name, label, options, required) {
+      const req = required ? ' <span class="req">*</span>' : '';
+      const esc = s => s.replace(/"/g, '&quot;');
+      return `<div class="field" data-req-radio="${!!required}"><label>${label}${req}</label><div class="radio-group">` +
+        options.map(o => `<label class="radio-opt"><input type="radio" name="${name}" value="${esc(o)}" ${data[name] === o ? 'checked' : ''}><span class="dot2"></span><span>${o}</span></label>`).join('') +
+        `</div></div>`;
+    }
+
+    function carChip() {
+      const km = cfg.perkm != null && cfg.perkm !== '' ;
+      const price = cfg.canone
+        ? `<div class="pr"><b>${monthly(cfg.canone)} €</b>/mese${km ? ` + ${money(cfg.perkm)} €/km` : ''}</div>` : '';
+      return `<div class="p-carchip">
+        <img src="${car.image}" alt="${car.brand} ${car.name}">
+        <div><div class="t">${car.brand} ${car.name}</div><div class="s">${cfg.durata} mesi · Anticipo ${eur0(cfg.anticipo)} €</div></div>
+        ${price}
+      </div>`;
+    }
+
+    function renderStep() {
+      const p = document.getElementById('panel');
+      let html = `<h1>${STEPS[step].heading}</h1>`;
+      if (step === 0) {
+        html += `<p class="intro">Se stai facendo il preventivo per qualcun altro del tuo nucleo familiare inserisci i suoi dati!</p>`;
+        html += field('nome', 'Nome', { required: true, ph: 'es. Mario' });
+        html += field('cognome', 'Cognome', { required: true, ph: 'es. Rossi' });
+        html += field('email', 'Email', { required: true, type: 'email', ph: 'es. mario.rossi@example.com' });
+        html += field('telefono', 'Numero di telefono', { required: true, type: 'tel', ph: '+39 XXX XXX XXXX', help: 'Serve a contattarti, sapere se hai ricevuto il preventivo e aiutarti con una consulenza personalizzata 📞✨' });
+        html += field('cf', 'Codice fiscale', { required: true, ph: 'MRYWLM80A01H501H' });
+        html += field('provincia', 'Provincia di residenza', { required: true, type: 'select', options: PROVINCE, help: 'La tariffa assicurativa sarà calcolata in base a questo dato. Di conseguenza, il canone totale potrebbe variare.' });
+        html += `<label class="check-row" data-check="privacy"><input type="checkbox" ${data.privacy ? 'checked' : ''}><span class="box">${CHECK}</span><span>Prendi visione del punto C) dell'<a href="#">informativa privacy</a>: riguarda i tuoi dati e il loro uso per creare il preventivo perfetto per te <span class="req">*</span></span></label>`;
+      } else if (step === 1) {
+        const TIPI = ['Privato', 'Libero professionista (iscritto all’albo)', 'Società', 'Ditta individuale', 'Associazione/Ente/Fondazione'];
+        const FATT = ['Fino a 50.000 €', '50.000 - 150.000 €', '150.000 - 500.000 €', 'Oltre 500.000 €'];
+        const ANNI = ['Meno di 1 anno', '1 - 3 anni', '3 - 5 anni', 'Oltre 5 anni'];
+        const HELP_FATT = 'Ci serve per calcolare la giusta rata di noleggio e valutare il tuo credito come si deve.';
+        const HELP_ANNI = 'Serve a darci un’idea della stabilità della tua azienda e offrirti il preventivo giusto.';
+        const HELP_PIVA = 'Se non esiste inserisci il codice fiscale della Società.';
+        html += field('tipo', 'Privato, Partita IVA o Azienda?', { required: true, type: 'select', options: TIPI, rerender: true });
+        const t = data.tipo;
+        if (t === 'Privato') {
+          html += field('contratto', 'E sul lavoro come gira?', { required: true, type: 'select', options: ['Contratto a tempo indeterminato', 'Contratto a tempo determinato', 'Contratto di apprendistato', 'Pensionato', 'Disoccupato', 'Altro'], help: 'È utile per capire se si può procedere con il noleggio. In assenza di un contratto stabile, serve un garante valido.' });
+          html += field('guadagno', 'Qual è in media il tuo guadagno netto mensile?', { required: true, type: 'select', options: ['Fino a 1.000 €', '1.000 - 1.500 €', '1.500 - 2.500 €', 'Oltre 2.500 €'], help: HELP_FATT });
+        } else if (t === 'Società') {
+          html += field('tipoSocieta', 'Perfetto, che tipo di società?', { required: true, type: 'select', options: ['S.r.l.', 'S.r.l.s.', 'S.p.A.', 'S.n.c.', 'S.a.s.', 'Società cooperativa', 'Altro'] });
+          html += field('piva', 'Inserisci la Partita IVA', { required: true, ph: 'Inserisci la Partita IVA', help: HELP_PIVA });
+          html += field('fatturato', 'Qual è il tuo fatturato dell’ultimo anno?', { required: true, type: 'select', options: FATT, help: HELP_FATT });
+          html += field('anniSocieta', 'Quanti anni ha la tua società?', { required: true, type: 'select', options: ANNI, help: HELP_ANNI });
+        } else if (t) {
+          html += field('piva', 'Inserisci la Partita IVA', { required: true, ph: 'Inserisci la Partita IVA', help: HELP_PIVA });
+          html += field('fatturato', 'Qual è il tuo fatturato dell’ultimo anno?', { required: true, type: 'select', options: FATT, help: HELP_FATT });
+          html += field('anniSocieta', 'Quanti anni ha la tua società?', { required: true, type: 'select', options: ANNI, help: HELP_ANNI });
+        }
+      } else if (step === 2) {
+        html += radioGroup('prima', 'È la tua prima esperienza con il Noleggio a Lungo Termine?', ['Sì', 'No'], true);
+        html += radioGroup('urgenza', 'Preferisci pianificare o improvvisare? Raccontaci quando ti serve l’auto.', [
+          'Ho bisogno subito dell’auto, valuto anche altre soluzioni purché arrivi presto',
+          'Ho bisogno presto dell’auto, ma posso aspettare per avere quella dei miei sogni',
+          'Intanto mi sto facendo un’idea, non ho fretta'
+        ], true);
+        html += field('codiceAmico', '🎁 Hai un codice amico? Inseriscilo qui:', { ph: 'Inserisci qui il codice' });
+      } else {
+        html += field('consensoE', 'Vuoi rimanere aggiornato sui nostri prodotti e servizi, come da punto E) della nostra <a href="#">informativa privacy</a>?', { required: true, type: 'select', options: ['Sì', 'No'], help: 'Basta darci il tuo consenso per ricevere aggiornamenti via mail o WhatsApp. 🚗✨' });
+        html += field('consensoF', 'Vuoi ricevere offerte personalizzate, come da punto F) della nostra <a href="#">informativa privacy</a>?', { required: true, type: 'select', options: ['Sì', 'No'], help: 'Con il tuo consenso ti invieremo proposte su misura via mail o WhatsApp.' });
+      }
+      p.innerHTML = html;
+      renderActions();
+      wire();
+      window.scrollTo(0, 0);
+    }
+
+    function renderActions() {
+      const isLast = step === STEPS.length - 1;
+      document.getElementById('actions').innerHTML =
+        `<button class="btn btn-ghost" id="back-btn">${step === 0 ? 'Annulla' : 'Indietro'}</button>
+         <button class="btn btn-primary" id="next-btn">${isLast ? 'Invia richiesta' : 'Avanti'}</button>`;
+      document.getElementById('back-btn').addEventListener('click', () => {
+        if (step === 0) { location.href = backHref; return; }
+        step--; renderStepper(); renderStep();
+      });
+      document.getElementById('next-btn').addEventListener('click', () => {
+        if (!stepValid()) return;
+        if (step === STEPS.length - 1) { submit(); return; }
+        step++; renderStepper(); renderStep();
+      });
+      refreshNext();
+      // reserva el espacio exacto de la barra sticky (inline gana sobre .app main)
+      const act = document.getElementById('actions'), panel = document.getElementById('panel');
+      panel.style.paddingBottom = (act.offsetHeight + 24) + 'px';
+    }
+    window.addEventListener('resize', () => {
+      const act = document.getElementById('actions'), panel = document.getElementById('panel');
+      if (act && panel) panel.style.paddingBottom = (act.offsetHeight + 24) + 'px';
+    });
+
+    function wire() {
+      document.querySelectorAll('#panel input, #panel select, #panel textarea').forEach(el => {
+        const handler = () => {
+          if (el.type === 'checkbox') data[el.closest('[data-check]').dataset.check] = el.checked;
+          else data[el.name] = el.value;
+          if (el.dataset.rerender) { renderStep(); return; }
+          refreshNext();
+        };
+        el.addEventListener('input', handler); el.addEventListener('change', handler);
+      });
+      refreshNext();
+    }
+
+    function stepValid() {
+      for (const el of document.querySelectorAll('#panel [data-req="true"]')) {
+        if (!el.value) return false;
+        if (el.type === 'email' && !/^[^@]+@[^@]+\.[^@]+$/.test(el.value)) return false;
+      }
+      for (const g of document.querySelectorAll('#panel [data-req-radio="true"]'))
+        if (!g.querySelector('input:checked')) return false;
+      for (const row of document.querySelectorAll('#panel .check-row'))
+        if (row.querySelector('.req') && !row.querySelector('input').checked) return false;
+      return true;
+    }
+
+    function refreshNext() {
+      const btn = document.getElementById('next-btn');
+      if (btn) btn.classList.toggle('is-disabled', !stepValid());
+    }
+
+    function submit() {
+      const q = new URLSearchParams();
+      q.set('id', car.slug);
+      if (data.nome) q.set('nome', data.nome);
+      if (data.email) q.set('email', data.email);
+      location.href = 'm-grazie.html?' + q.toString();
+    }
+
+    /* ---- Dropdown custom: abrir/seleccionar/cerrar (delegado) ---- */
+    function closeAllDD() {
+      document.querySelectorAll('.dd[data-open="true"]').forEach(dd => {
+        dd.dataset.open = 'false'; dd.querySelector('.dd-panel').hidden = true;
+      });
+    }
+    document.addEventListener('click', e => {
+      const trigger = e.target.closest('.dd-field');
+      const opt = e.target.closest('.dd-opt');
+      if (trigger) {
+        const dd = trigger.closest('.dd');
+        const willOpen = dd.dataset.open !== 'true';
+        closeAllDD();
+        if (willOpen) { dd.dataset.open = 'true'; dd.querySelector('.dd-panel').hidden = false; }
+        return;
+      }
+      if (opt) {
+        const dd = opt.closest('.dd');
+        const val = opt.dataset.val;
+        data[dd.dataset.dd] = val;
+        dd.querySelector('input[type=hidden]').value = val;
+        dd.dataset.filled = 'true';
+        const disp = dd.querySelector('.dd-val'); disp.textContent = val; disp.classList.remove('is-ph');
+        dd.querySelectorAll('.dd-opt').forEach(o => o.classList.toggle('sel', o === opt));
+        closeAllDD();
+        if (dd.dataset.rerender) { renderStep(); return; }
+        refreshNext();
+        return;
+      }
+      if (!e.target.closest('.dd')) closeAllDD();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAllDD(); });
+
+    renderStepper();
+    renderStep();
+  })();
+  </script>
+</body>
+</html>
