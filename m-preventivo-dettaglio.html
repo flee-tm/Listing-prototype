@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<script>
+(function (m, a, z, e) {
+  var s, t, u, v;
+  try {
+    t = m.sessionStorage.getItem('maze-us');
+  } catch (err) {}
+
+  if (!t) {
+    t = new Date().getTime();
+    try {
+      m.sessionStorage.setItem('maze-us', t);
+    } catch (err) {}
+  }
+
+  u = document.currentScript || (function () {
+    var w = document.getElementsByTagName('script');
+    return w[w.length - 1];
+  })();
+  v = u && u.nonce;
+
+  s = a.createElement('script');
+  s.src = z + '?apiKey=' + e;
+  s.async = true;
+  if (v) s.setAttribute('nonce', v);
+  a.getElementsByTagName('head')[0].appendChild(s);
+  m.mazeUniversalSnippetApiKey = e;
+})(window, document, 'https://snippet.maze.co/maze-universal-loader.js', '517febf3-331d-4fb5-88a1-cc1fe9c9c2b4');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Il tuo preventivo · Flee mobile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="flee-library/site.css">
+<link rel="stylesheet" href="m-app.css">
+<style>
+  .app main { padding: 0 0 24px; }
+
+  /* strip login */
+  .pv-login { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px;
+    background: var(--secondary-100); padding: 10px 16px; font-size: 13px; color: var(--ottanio-flee); text-align: center; }
+  .pv-login a { color: var(--text-subtle, #5b747f); font-weight: 600; text-decoration: underline; }
+
+  .pv-wrap { padding: 24px 16px; display: flex; flex-direction: column; gap: 24px; }
+
+  /* intro */
+  .pv-hello { font-size: 16px; color: var(--ottanio-flee); line-height: 1.4; }
+  .pv-hello b { font-weight: 600; }
+  .pv-titlerow { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .pv-titlerow h1 { font-size: 26px; font-weight: 600; color: var(--ottanio-flee); }
+  .pv-badge { background: var(--card-alt); color: var(--ottanio-flee); font-size: 12px; font-weight: 700;
+    border-radius: 8px; padding: 4px 8px; }
+  .pv-gen { font-size: 14px; color: var(--text-subtle, #5b747f); margin-top: 8px; }
+  .pv-pdf { margin-top: 20px; width: 100%; height: 56px; border-radius: 48px; background: var(--green-flee);
+    display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--ottanio-flee); }
+
+  /* card con pestaña de esquina */
+  .pv-card { position: relative; background: #fff; border: 1px solid var(--card-border); border-radius: 24px;
+    padding: 56px 20px 28px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .pv-tab { position: absolute; top: 0; left: 0; height: 36px; display: flex; align-items: center; padding: 0 22px;
+    background: var(--ottanio-700, #1d6277); color: #f3f6f7; font-size: 15px; font-weight: 600;
+    border-top-left-radius: 24px; border-bottom-right-radius: 20px; }
+
+  .pv-sect { display: flex; flex-direction: column; gap: 8px; }
+  .pv-divider { height: 1px; background: var(--card-border); margin: 8px 0; }
+  .pv-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; font-size: 15px; color: var(--ottanio-flee); }
+  .pv-row .k { font-weight: 400; }
+  .pv-row .v { font-weight: 600; text-align: right; }
+  .pv-row .info { width: 18px; height: 18px; color: var(--text-subtle, #5b747f); display: inline-flex; vertical-align: middle; margin-left: 2px; }
+  .pv-row .k.with-info { display: inline-flex; align-items: center; }
+
+  /* la tua auto */
+  .pv-carimg { width: 100%; aspect-ratio: 24/16; object-fit: cover; border-radius: 12px; }
+  .pv-repr { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; font-size: 12px; color: var(--ottanio-flee); }
+  .pv-repr .icon { width: 16px; height: 16px; }
+  .pv-carname { font-size: 22px; font-weight: 600; color: var(--ottanio-flee); margin-top: 16px; }
+  .pv-carall { font-size: 15px; color: var(--ottanio-flee); margin-top: 4px; }
+  .pv-listino { margin-top: 16px; }
+  .pv-listino .lbl { font-size: 12px; color: var(--ottanio-flee); }
+  .pv-listino .val { font-size: 20px; font-weight: 600; color: var(--ottanio-flee); }
+  .pv-listino .val small { font-size: 12px; font-weight: 600; }
+
+  /* cosa è incluso */
+  .pv-inc-h { font-size: 16px; font-weight: 700; color: var(--ottanio-flee); }
+  .pv-cov { display: flex; flex-direction: column; gap: 4px; }
+  .pv-cov-top { display: flex; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
+  .pv-cov-top .icon { width: 20px; height: 20px; flex-shrink: 0; color: var(--ottanio-flee); }
+  .pv-cov-top .icon img { width: 100%; height: 100%; object-fit: contain; }
+  .pv-cov-top .t { flex: 1 1 auto; min-width: 0; font-size: 15px; font-weight: 500; color: var(--ottanio-flee); }
+  .pv-partner { align-self: center; }
+  .pv-partner { font-size: 12px; font-weight: 500; padding: 1px 5px; border-radius: 4px; }
+  .pv-partner.red { background: #c21a17; color: #f3f6f7; }
+  .pv-partner.grey { background: #c9d5da; color: #04475c; }
+  .pv-cov-sub { font-size: 12px; color: var(--ottanio-flee); padding-left: 28px; }
+  .pv-srv { display: flex; align-items: center; gap: 12px; }
+  .pv-srv .icon { width: 20px; height: 20px; flex-shrink: 0; color: var(--ottanio-flee); }
+  .pv-srv .icon img { width: 100%; height: 100%; object-fit: contain; }
+  .pv-srv span:last-child { font-size: 15px; font-weight: 500; color: var(--ottanio-flee); }
+  .pv-subhead { display: flex; flex-direction: column; gap: 14px; }
+
+  /* la tua rata */
+  .pv-rata { display: flex; flex-direction: column; gap: 24px; }
+  .pv-rata .lbl { font-size: 15px; color: var(--ottanio-flee); }
+  .pv-price { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 4px; margin-top: 10px; }
+  .pv-price .num { font-size: 34px; font-weight: 700; line-height: 1; color: var(--ottanio-flee); }
+  .pv-price .plus { font-size: 30px; color: var(--ottanio-flee); line-height: 1; }
+  .pv-unit { display: flex; flex-direction: column; line-height: 1.1; }
+  .pv-unit .u { font-size: 12px; color: var(--ottanio-flee); }
+  .pv-unit .u b { font-size: 18px; font-weight: 400; }
+  .pv-unit .iva { font-size: 11px; color: var(--text-subtle, #5b747f); }
+  .pv-rata.promo .num, .pv-rata.promo .plus, .pv-rata.promo .u, .pv-rata.promo .u b { color: var(--promo, #b60088); }
+
+  /* hint bulb */
+  .pv-hint { display: flex; gap: 12px; align-items: flex-start; background: #effef5; border: 1px solid var(--card-alt);
+    border-radius: 16px; padding: 16px; }
+  .pv-hint .ico { flex-shrink: 0; width: 32px; height: 32px; border-radius: 7px; background: var(--ottanio-700, #1d6277);
+    display: flex; align-items: center; justify-content: center; color: #fff; }
+  .pv-hint .ico .icon { width: 18px; height: 18px; }
+  .pv-hint p { font-size: 13px; line-height: 1.45; color: var(--ottanio-flee); }
+  .pv-hint p + p { margin-top: 10px; }
+
+  /* next steps */
+  .pv-next { display: flex; gap: 12px; align-items: flex-start; background: #effef5; border: 1px solid var(--card-alt);
+    border-radius: 24px; padding: 20px; }
+  .pv-next .ico { flex-shrink: 0; width: 32px; height: 32px; border-radius: 7px; background: var(--ottanio-700, #1d6277);
+    display: flex; align-items: center; justify-content: center; color: #fff; }
+  .pv-next .ico .icon { width: 18px; height: 18px; }
+  .pv-next-list { display: flex; flex-direction: column; gap: 14px; }
+  .pv-next-item b { display: block; font-size: 15px; font-weight: 700; color: var(--ottanio-flee); }
+  .pv-next-item p { font-size: 14px; line-height: 1.4; color: var(--ottanio-flee); margin-top: 2px; }
+
+  /* sticky bottom */
+  .pv-sticky { position: fixed; left: 50%; transform: translateX(-50%); bottom: 0; width: 100%; max-width: 430px; z-index: 50;
+    background: var(--secondary-100); border: 1px solid var(--card-border); border-bottom: 0;
+    border-top-left-radius: 28px; border-top-right-radius: 28px;
+    padding: 20px 16px calc(20px + var(--safe-bottom)); display: flex; flex-direction: column; gap: 16px; }
+  .pv-sticky h2 { font-size: 18px; font-weight: 600; color: var(--ottanio-flee); text-align: center; }
+  .pv-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .pv-abtn { height: 54px; border-radius: 48px; display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; text-align: center; padding: 0 8px; }
+  .pv-abtn.green { background: var(--green-flee); color: var(--ottanio-flee); }
+  .pv-abtn.dark { background: var(--ottanio-700, #1d6277); color: #f3f6f7; }
+  .pv-abtn.outline { background: transparent; border: 1px solid var(--ottanio-700, #1d6277); color: var(--ottanio-flee); }
+</style>
+</head>
+<body>
+  <div class="app">
+    <div id="flee-header"></div>
+    <div class="pv-login">
+      <span><a href="#">Accedi</a> all'area riservata per gestire i tuoi preventivi. Nuovo utente? <a href="#">Registrati</a></span>
+    </div>
+    <main>
+      <div class="pv-wrap">
+        <div>
+          <p class="pv-hello">Ciao <b id="pv-nome">{nome cognome/ragione sociale}</b>,<br>ecco il tuo preventivo Flee!</p>
+        </div>
+
+        <div>
+          <div class="pv-titlerow">
+            <h1>Preventivo FL-2026-0225</h1>
+            <span class="pv-badge">Da confermare</span>
+          </div>
+          <p class="pv-gen">Generato il 25/02/2026, valido fino al 25/03/2026</p>
+          <a class="pv-pdf" href="#">Scarica preventivo PDF</a>
+        </div>
+
+        <!-- La tua auto -->
+        <div class="pv-card">
+          <div class="pv-tab">La tua auto</div>
+          <img class="pv-carimg" id="pv-img" src="" alt="">
+          <div class="pv-repr"><span class="icon" id="pv-repr-ico"></span>L'immagine è rappresentativa</div>
+          <p class="pv-carname" id="pv-carname"></p>
+          <p class="pv-carall" id="pv-carall"></p>
+
+          <div class="pv-listino">
+            <p class="lbl">Prezzo di listino (optional inclusi)</p>
+            <p class="val"><span id="pv-listino"></span> <small>iva incl.</small></p>
+          </div>
+          <div class="pv-divider"></div>
+          <div class="pv-sect" id="pv-specs"></div>
+          <div class="pv-divider"></div>
+          <div class="pv-sect" id="pv-stato"></div>
+        </div>
+
+        <!-- Condizioni noleggio -->
+        <div class="pv-card">
+          <div class="pv-tab">Condizioni noleggio</div>
+          <div class="pv-sect" id="pv-cond1"></div>
+          <div class="pv-divider"></div>
+          <div class="pv-row">
+            <span class="k with-info">Protezione <span class="info" id="pv-prot-ico"></span></span>
+            <span class="v" id="pv-prot-val"></span>
+          </div>
+          <div class="pv-divider"></div>
+          <div class="pv-sect" id="pv-cond2"></div>
+          <div class="pv-divider"></div>
+          <div class="pv-sect" id="pv-cond3"></div>
+          <p id="pv-promo-desc" style="font-weight:300;font-size:13px;color:var(--ottanio-flee);"></p>
+        </div>
+
+        <!-- Cosa è incluso -->
+        <div class="pv-card">
+          <div class="pv-tab">Cosa è incluso</div>
+          <div class="pv-subhead">
+            <p class="pv-inc-h">Coperture assicurative</p>
+            <div class="pv-sect" id="pv-cover" style="gap:14px;"></div>
+            <p class="pv-inc-h" style="margin-top:8px;">Servizi inclusi solo su Flee</p>
+            <div class="pv-sect" id="pv-servizi" style="gap:14px;"></div>
+          </div>
+        </div>
+
+        <!-- La tua rata Flee -->
+        <div class="pv-card">
+          <div class="pv-tab" id="pv-rata-tab">La tua rata Flee</div>
+          <div id="pv-rata"></div>
+        </div>
+
+        <!-- hint PPU -->
+        <div class="pv-hint" id="pv-hint" hidden>
+          <div class="ico"><span class="icon" id="pv-hint-ico"></span></div>
+          <div>
+            <p>Qualunque sia la tua percorrenza mensile, non pagherai mai più di <b id="pv-maxppu"></b> € iva incl. di quota variabile (il pay per use massimo).</p>
+            <p>Se passi al noleggio Flat la tua rata sarà: <b id="pv-flat"></b> €/mese iva incl. (calcolata su una percorrenza contrattuale complessiva per l'intera durata del noleggio).</p>
+          </div>
+        </div>
+
+        <!-- next steps -->
+        <div class="pv-next">
+          <div class="ico"><span class="icon" id="pv-next-ico"></span></div>
+          <div class="pv-next-list">
+            <div class="pv-next-item"><b>Vorrei procedere</b><p>Il nostro team ti contatterà a breve per approfondire il preventivo e rispondere ad eventuali domande.</p></div>
+            <div class="pv-next-item"><b>Mi interessa, ma non ora</b><p>Ti ricontatteremo più avanti per verificare se il preventivo è ancora di tuo interesse.</p></div>
+            <div class="pv-next-item"><b>Vorrei una modifica</b><p>Un nostro consulente ti contatterà per raccogliere le tue richieste di modifica e aggiornarti con un nuovo preventivo.</p></div>
+            <div class="pv-next-item"><b>Non mi interessa</b><p>Non riceverai ulteriori comunicazioni relative a questo preventivo. Se in futuro dovessi ripensarci, potrai richiederne uno nuovo in qualsiasi momento.</p></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <div id="flee-footer"></div>
+
+    <!-- sticky -->
+    <div class="pv-sticky" id="pv-sticky">
+      <h2>Ti interessa il preventivo?</h2>
+      <div class="pv-actions">
+        <button class="pv-abtn green">Vorrei procedere</button>
+        <button class="pv-abtn dark">Vorrei una modifica</button>
+        <button class="pv-abtn outline">Mi interessa, ma non ora</button>
+        <button class="pv-abtn outline">Non mi interessa</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="flee-library/data/cars.js"></script>
+  <script src="m-app.js"></script>
+  <script>
+  (function () {
+    MF.renderChrome();
+    const { carById, kindOf, pricing, nf, eur0, I } = MF;
+    const params = new URLSearchParams(location.search);
+    const car = carById(params.get('id')) || MF.cars[0];
+    const kind = kindOf(car);
+    const isPPU = kind === 'ppu';
+    const pr = pricing(car, kind);
+
+    const nome = params.get('nome') || '{nome cognome/ragione sociale}';
+    document.getElementById('pv-nome').textContent = nome;
+
+    /* iconos coberturas/servizi (mismos que la scheda) */
+    const _s = (paths, sw, extra) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw || '1.3'}" stroke-linecap="round" stroke-linejoin="round"${extra ? ' ' + extra : ''} xmlns="http://www.w3.org/2000/svg">${paths}</svg>`;
+    const _f = (paths) => `<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">${paths}</svg>`;
+    const _p = (...d) => d.map(x => `<path d="${x}"/>`).join('');
+    const _img = (name) => `<img src="flee-library/assets/svg/${name}.png" alt="">`;
+    const ICON = {
+      shield: _s(_p('M15.3 10.0992L11.5 13.8992L9.3 11.5992M20 11.1992C20 15.6992 16.6 19.9992 12 20.9992C7.4 19.9992 4 15.6992 4 11.1992V7.59922C4 6.79922 4.5 6.09922 5.2 5.69922L10.2 3.69922C11.3 3.19922 12.6 3.19922 13.7 3.69922L18.7 5.69922C19.5 5.99922 20 6.69922 20 7.59922V11.1992Z')),
+      furto: _img('FurtoIncendio'),
+      danni: _s(_p('M8.25 11.5H6.25', 'M17.8799 8.29047L19.9999 7.23047', 'M5.12 8.29047L3 7.23047', 'M17.9498 8.65977L16.9898 4.54977C16.7798 3.64977 15.9698 3.00977 15.0398 3.00977H7.9598C7.0298 3.00977 6.2198 3.64977 6.0098 4.54977L5.0498 8.65977', 'M14.3399 19.0495L16.3499 15.6995C16.9099 14.7695 18.2499 14.7695 18.7999 15.6995L20.8099 19.0495C21.3299 19.9095 20.7099 20.9995 19.6999 20.9995H15.4399C14.4399 20.9995 13.8199 19.9095 14.3299 19.0495H14.3399Z', 'M20 12V11.5C20 9.84 18.66 8.5 17 8.5H6C4.34 8.5 3 9.84 3 11.5V16C3 16.55 3.45 17 4 17H6.24C6.79 17 7.24 16.55 7.24 16V14.5H11.98', 'M14.75 11.5H16.75')),
+      soccorso: _f(_p('M22.3 12.1992L20 6.44922C19.85 5.99922 19.5 5.64922 19.1 5.49922V5.14922C19.1 3.79922 18 2.69922 16.65 2.69922C15.3 2.69922 14.2 3.79922 14.2 5.14922V5.74922C13.8 6.04922 13.55 6.54922 13.55 7.09922V10.4992L5.25 5.14922C4.8 4.79922 4.2 4.84922 3.8 5.24922C3.45 5.54922 3.35 5.99922 3.45 6.39922V10.7492C3.45 11.0992 3.75 11.3992 4.1 11.3992C4.65 11.3992 5.1 11.8492 5.1 12.3992C5.1 12.9492 4.65 13.3992 4.1 13.3992C3.55 13.3992 3.1 12.9492 3.1 12.3992C3.1 12.0492 2.8 11.7492 2.45 11.7492C2.1 11.7492 1.8 12.0492 1.8 12.3992C1.8 13.6492 2.85 14.6992 4.1 14.6992C5.35 14.6992 6.4 13.6492 6.4 12.3992C6.4 11.3492 5.7 10.4492 4.75 10.1992V8.34922L9.3 14.5492H8.75C8.7 14.5492 8.7 14.5492 8.65 14.5492L2.65 15.5492C1.85 15.6992 1.25 16.4492 1.25 17.2492V18.0492C1.25 18.9992 2.05 19.7992 3 19.7992H4.3C4.55 20.8992 5.55 21.6992 6.7 21.6992C7.85 21.6992 8.8 20.8992 9.1 19.8492H15.65C15.95 20.8992 16.9 21.6992 18.05 21.6992C19.2 21.6992 20.15 20.8992 20.45 19.8492H20.75C21.7 19.8492 22.5 19.0492 22.5 18.0992V12.8492C22.45 12.5492 22.35 12.2992 22.3 12.1992ZM20.8 11.8992H17.75C17.5 11.8992 17.3 11.6992 17.3 11.4492V9.79922C17.3 9.54922 17.5 9.34922 17.75 9.34922H19.75L20.8 11.8992ZM16.65 3.99922C17.3 3.99922 17.8 4.49922 17.8 5.14922V5.34922H15.5V5.14922C15.5 4.49922 16 3.99922 16.65 3.99922ZM5.05 6.54922L13.55 12.0492V14.5992H10.9L5.05 6.54922ZM6.65 20.4492C6 20.4492 5.45 19.8992 5.45 19.2492C5.45 18.5992 6 18.0492 6.65 18.0492C7.3 18.0492 7.85 18.5992 7.85 19.2492C7.85 19.8992 7.3 20.4492 6.65 20.4492ZM18 20.4492C17.35 20.4492 16.8 19.8992 16.8 19.2492C16.8 18.5992 17.35 18.0492 18 18.0492C18.65 18.0492 19.2 18.5992 19.2 19.2492C19.2 19.8992 18.65 20.4492 18 20.4492ZM20.7 18.5992H20.4C20.1 17.5492 19.15 16.7492 18 16.7492C16.85 16.7492 15.9 17.5492 15.6 18.5992H9.05C8.75 17.5492 7.8 16.7492 6.65 16.7492C5.5 16.7492 4.55 17.4992 4.25 18.5492H2.95C2.7 18.5492 2.5 18.3492 2.5 18.0992V17.2992C2.5 17.0992 2.65 16.9492 2.85 16.8992L8.8 15.8992H14.2C14.55 15.8992 14.85 15.5992 14.85 15.2492V7.09922C14.85 6.84922 15.05 6.64922 15.3 6.64922H18.4C18.55 6.64922 18.75 6.74922 18.8 6.94922L19.25 8.04922H17.75C16.8 8.04922 16 8.84922 16 9.79922V11.4492C16 12.3992 16.8 13.1992 17.75 13.1992H21.15V18.1492C21.15 18.3992 20.95 18.5992 20.7 18.5992Z')),
+      infortunio: _s(_p('M12.0005 2.5C13.8414 2.50015 15.3003 3.95889 15.3003 5.7998M12.0005 2.5C13.8093 2.50016 15.3003 3.99092 15.3003 5.7998M12.0005 2.5C10.1915 2.5 8.70068 3.99082 8.70068 5.7998C8.70068 3.95879 10.1595 2.5 12.0005 2.5ZM15.3003 5.7998C15.3002 7.64063 13.8413 9.09945 12.0005 9.09961M15.3003 5.7998C15.3002 7.6086 13.8093 9.09945 12.0005 9.09961M12.0005 9.09961C10.2169 9.09961 8.79174 7.7302 8.70459 5.9707V5.96777C8.79352 7.70008 10.2479 9.09961 12.0005 9.09961ZM8.01709 18.2793C8.00725 18.3522 8.0005 18.4261 8.00049 18.501C8.0005 18.4254 8.00679 18.3516 8.01709 18.2793ZM11.9497 12.001H12.0503C13.3892 12.001 14.719 12.1345 16.0005 12.4365V12.4502L15.4565 12.3604C14.5335 12.2065 13.6099 12.1031 12.686 12.0518L12.0005 12.0137V12.0225L11.3218 12.0518C10.1383 12.1032 8.95288 12.2569 7.81592 12.5146C5.59669 12.9819 4.00049 15.0636 4.00049 17.3516C4.00049 14.9918 5.60219 12.9677 7.78955 12.4863L7.79834 12.4844L7.80811 12.4814C9.14823 12.1465 10.5441 12.001 11.9497 12.001ZM8.01709 18.2793C8.00725 18.3522 8.0005 18.4261 8.00049 18.501ZM11.9497 12.001H12.0503C13.3892 12.001 14.719 12.1345 16.0005 12.4365Z'), '1.05'),
+      tutela: _img('TutelaLegale'),
+      car: _s(_p('M8.25 14H5.75M18.25 14H15.75M22 9L19.4 10L18.55 6C18.3 4.85 17.3 4 16.1 4H8C6.85 4 5.85 4.8 5.55 5.95L4.65 10L2 9M3.25 20H5.5C6.35 20 7 19.35 7 18.5V17.5H17V18.5C17 19.35 17.65 20 18.5 20H20.75C21.45 20 22 19.45 22 18.75V13C22 11.35 20.65 10 19 10H5C3.35 10 2 11.35 2 13V18.75C2 19.45 2.55 20 3.25 20Z')),
+      doc: _s(_p('M8.00039 16.9992H16.0004M8.00039 13.0008H16.0004M19 9H12.5C12.2 9 11.9 8.8 11.7 8.6L10.3 6.5C10.1 6.2 9.8 6 9.5 6H5M19 9C20.1 9 21 9.9 21 11V19C21 20.1 20.1 21 19 21H5C3.9 21 3 20.1 3 19V8C3 6.9 3.9 6 5 6M19 9L19.0004 5C19.0004 3.9 18.1004 3 17.0004 3H7.00039C5.90039 3 5.00039 3.9 5.00039 5L5 6')),
+      manut: _f(_p('M21.5496 4.80039C21.2496 4.70039 20.9496 4.60039 20.5996 4.45039L18.3496 3.30039C15.9496 2.10039 13.0996 2.10039 10.6996 3.30039C9.5996 3.90039 8.6496 4.50039 7.7996 5.20039C6.2996 5.20039 4.7996 5.35039 3.3496 5.70039C2.0496 6.05039 1.1496 7.35039 1.3496 8.70039L1.6996 10.9504C1.8996 12.0004 2.7996 12.7004 3.8496 12.7004H4.6996C5.1496 13.3004 5.8496 13.7004 6.6496 13.7004C7.4496 13.7004 8.1496 13.3004 8.5996 12.7004H15.3996C15.8496 13.3004 16.5496 13.7004 17.3496 13.7004C18.1496 13.7004 18.8496 13.3004 19.2996 12.7004H20.4996C21.6996 12.7004 22.6496 11.7504 22.6496 10.5504V6.40039C22.6496 5.65039 22.1996 5.05039 21.5496 4.80039ZM6.6496 12.3504C6.0496 12.3504 5.5496 11.8504 5.5496 11.2504C5.5496 10.6504 6.0496 10.1504 6.6496 10.1504C7.2496 10.1504 7.7496 10.6504 7.7496 11.2504C7.7496 11.8504 7.2496 12.3504 6.6496 12.3504ZM17.3496 12.3504C16.7496 12.3504 16.2496 11.8504 16.2496 11.2504C16.2496 10.6504 16.7496 10.1504 17.3496 10.1504C17.9496 10.1504 18.4496 10.6504 18.4496 11.2504C18.4496 11.8504 17.9496 12.3504 17.3496 12.3504ZM21.3496 10.5004C21.3496 11.0004 20.9996 11.3504 20.4996 11.3504H19.7496C19.7496 11.3004 19.7496 11.3004 19.7496 11.2504C19.7496 9.95039 18.6496 8.85039 17.3496 8.85039C16.0496 8.85039 14.9496 9.95039 14.9496 11.2504C14.9496 11.3004 14.9496 11.3004 14.9496 11.3504H9.0496C9.0496 11.3004 9.0496 11.3004 9.0496 11.2504C9.0496 9.95039 7.9496 8.85039 6.6496 8.85039C5.3496 8.85039 4.2496 9.95039 4.2496 11.2504C4.2496 11.3004 4.2496 11.3004 4.2496 11.3504H3.8496C3.4496 11.3504 3.0996 11.0504 2.9996 10.6504L2.6496 8.45039C2.5496 7.80039 2.9996 7.10039 3.6496 6.95039C5.0996 6.60039 6.5496 6.45039 8.0496 6.50039C8.1996 6.50039 8.3996 6.45039 8.4996 6.35039C9.2996 5.65039 10.1996 5.00039 11.2996 4.45039C13.2996 3.45039 15.7496 3.45039 17.7496 4.45039L19.9996 5.60039C20.3996 5.80039 20.7496 5.95039 21.0996 6.05039C21.1996 6.10039 21.3496 6.20039 21.3496 6.40039V10.5004Z')),
+      settings: _s(_p('M12.8003 3.00117C13.2003 3.00117 13.6003 3.25117 13.7503 3.65117L14.2503 5.05117C14.3503 5.25117 14.5003 5.45117 14.7003 5.60117L16.2003 6.45117C16.4003 6.55117 16.6503 6.60117 16.9003 6.55117L18.4003 6.30117C18.8003 6.25117 19.2503 6.40117 19.4503 6.80117L20.2503 8.20117C20.4503 8.55117 20.4003 9.00117 20.1503 9.35117L19.1003 10.5012C18.9503 10.7012 18.8503 10.9012 18.8503 11.1512V12.9012C18.8503 13.1512 18.9503 13.3512 19.1003 13.5512L20.0503 14.7012C20.3003 15.0012 20.3503 15.5012 20.1503 15.8512L19.3503 17.2512C19.1503 17.6012 18.7003 17.8012 18.3003 17.7512L16.8003 17.5012C16.5503 17.4512 16.3503 17.5012 16.1003 17.6012L14.6003 18.4512C14.4003 18.5512 14.2503 18.7512 14.1503 19.0012L13.6503 20.4012C13.5003 20.8012 13.1503 21.0512 12.7003 21.0512H11.1003C10.7003 21.0512 10.3003 20.8012 10.1503 20.4012L9.65026 19.0012C9.55026 18.8012 9.40026 18.6012 9.20026 18.4512L7.70026 17.6012C7.50026 17.5012 7.25026 17.4512 7.00026 17.5012L5.50026 17.7512C5.10026 17.8012 4.65026 17.6512 4.45026 17.2512L3.65026 15.8512C3.45026 15.5012 3.50026 15.0512 3.75026 14.7012L4.90026 13.5012C5.05026 13.3012 5.15026 13.1012 5.15026 12.8512V11.1012C5.15026 10.8512 5.05026 10.6512 4.90026 10.4512L3.95026 9.30117C3.70026 9.00117 3.65026 8.50117 3.85026 8.15117L4.65026 6.75117C4.85026 6.40117 5.30026 6.20117 5.70026 6.25117L7.20026 6.50117C7.45026 6.55117 7.65026 6.50117 7.90026 6.40117L9.40026 5.55117C9.60026 5.45117 9.75026 5.25117 9.85026 5.00117L10.3503 3.60117C10.5003 3.20117 10.8503 2.95117 11.3003 2.95117H12.8003V3.00117Z', 'M11.9997 14.7512C13.5185 14.7512 14.7497 13.52 14.7497 12.0012C14.7497 10.4824 13.5185 9.25117 11.9997 9.25117C10.4809 9.25117 9.24971 10.4824 9.24971 12.0012C9.24971 13.52 10.4809 14.7512 11.9997 14.7512Z'), '1.3', 'stroke-miterlimit="10"'),
+      telematica: _s(_p('M3 3V19C3 19.5304 3.21071 20.0391 3.58579 20.4142C3.96086 20.7893 4.46957 21 5 21H21M18 17V9M12.9996 16.9992V4.99922M8.00039 16.9992V13.9992'), '1.296'),
+      headset: _s(_p('M6.54982 11.95C6.19982 11.15 5.99982 10.25 5.99982 9.29999C5.99982 5.29999 9.59982 2.04999 13.9998 2.04999C18.3998 2.04999 21.9998 5.24999 21.9998 9.29999C21.9998 11.65 20.7498 13.75 18.7998 15.1C18.7998 15.85 18.7998 16.9 18.7998 17.95L15.6498 16.4C15.0998 16.5 14.5498 16.55 13.9998 16.55C13.2998 16.55 12.5998 16.45 11.9498 16.3M2.19983 16.85C2.19983 14.15 4.39983 11.95 7.09983 11.95C9.79983 11.95 11.9998 14.15 11.9998 16.85C11.9998 19.55 9.79983 21.75 7.09983 21.75C6.34983 21.75 5.6498 21.6 5.0498 21.3L2.0498 21.95L2.6998 18.95C2.3998 18.3 2.2498 17.6 2.2498 16.9')),
+      truck: I.expand && '<svg viewBox="33.66 3697.02 17.90 17.97" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M48.6943 3703.99V3702.88C48.6943 3702.29 48.3778 3701.75 47.8584 3701.46L42.5831 3698.53C42.0962 3698.26 41.4956 3698.26 41.0087 3698.53L35.7335 3701.46C35.2222 3701.75 34.8976 3702.29 34.8976 3702.88V3712.13H38.9554V3706.45H41.3901" stroke="currentColor" stroke-width="1.05504" stroke-linecap="round" stroke-linejoin="round"/><path d="M47.8827 3712.53H44.6364V3712.94C44.6364 3713.38 44.2712 3713.75 43.8248 3713.75H43.0133C42.5669 3713.75 42.2017 3713.38 42.2017 3712.94V3711.52C42.2017 3710.73 42.8347 3710.1 43.622 3710.1H48.8972C49.6844 3710.1 50.3174 3710.73 50.3174 3711.52V3712.94C50.3174 3713.38 49.9522 3713.75 49.5058 3713.75H48.6943C48.2479 3713.75 47.8827 3713.38 47.8827 3712.94V3712.53Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><path d="M43.1269 3710.2L43.5895 3708.2C43.7193 3707.65 44.2063 3707.26 44.7744 3707.26H47.7366C48.3047 3707.26 48.7917 3707.65 48.9215 3708.2L49.3841 3710.2" stroke="currentColor" stroke-width="1.05504" stroke-linecap="round" stroke-linejoin="round"/><path d="M43.2081 3709.79L42.2017 3709.29" stroke="currentColor" stroke-width="1.05504" stroke-linecap="round" stroke-linejoin="round"/><path d="M49.3111 3709.79L50.3174 3709.29" stroke="currentColor" stroke-width="1.05504" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+      phone: _s(_p('M8.00049 21H7.00049C5.90049 21 5.00049 20.1 5.00049 19V5C5.00049 3.9 5.90049 3 7.00049 3H15.0005C16.1005 3 17.0005 3.9 17.0005 5V7M13.4996 3V5C13.4996 5.3 13.2996 5.5 12.9996 5.5H8.99961C8.69961 5.5 8.49961 5.3 8.49961 5V3M12.9996 16.0008L12.3996 15.4008C11.7996 14.8008 10.9996 14.8008 10.3996 15.4008C9.89955 15.9008 9.79955 16.6008 10.1996 17.2008L12.0996 20.1008C12.4996 20.7008 13.0996 21.0008 13.7996 21.0008H17.5996C18.5996 21.0008 19.4996 20.2008 19.5996 19.2008L19.9996 16.3008C20.0996 15.2008 19.3996 14.3008 18.2996 14.1008L15.9996 13.8008V11.5008C15.9996 10.7008 15.2996 10.0008 14.4996 10.0008C13.6996 10.0008 12.9996 10.7008 12.9996 11.5008V16.0008Z')),
+      user: '<svg viewBox="43.34 980.95 18.83 15.18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M56.4854 994.824C55.5115 994.094 54.213 993.607 52.7521 993.607C51.2913 993.607 49.9928 994.094 49.0189 994.824" stroke="currentColor" stroke-width="1.05504" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M44.6364 989.792C45.448 989.143 46.6653 988.737 47.8827 988.737" stroke="currentColor" stroke-width="1.05504" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M48.2885 986.303C49.409 986.303 50.3174 985.394 50.3174 984.274C50.3174 983.153 49.409 982.245 48.2885 982.245C47.1679 982.245 46.2596 983.153 46.2596 984.274C46.2596 985.394 47.1679 986.303 48.2885 986.303Z" stroke="currentColor" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M57.6216 988.737C58.8389 988.737 60.0563 989.143 60.8678 989.792" stroke="currentColor" stroke-width="1.05504" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M57.2158 986.303C58.3363 986.303 59.2447 985.394 59.2447 984.274C59.2447 983.153 58.3363 982.245 57.2158 982.245C56.0952 982.245 55.1868 983.153 55.1868 984.274C55.1868 985.394 56.0952 986.303 57.2158 986.303Z" stroke="currentColor" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M52.7521 991.172C53.8727 991.172 54.7811 990.264 54.7811 989.143C54.7811 988.023 53.8727 987.114 52.7521 987.114C51.6316 987.114 50.7232 988.023 50.7232 989.143C50.7232 990.264 51.6316 991.172 52.7521 991.172Z" stroke="currentColor" stroke-width="1.3" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    };
+
+    const PPU_COVER = [
+      [ICON.car, 'RC Auto con guida libera e assenza di rivalsa', 'Franchigia: 0€', 'Generali', 'red'],
+      [ICON.furto, 'Furto e incendio', 'Franchigia: 0€', 'Generali', 'red'],
+      [ICON.danni, 'Danni auto', 'Franchigia: 0€', 'Generali', 'red'],
+      [ICON.soccorso, 'Assistenza e soccorso stradale', 'Franchigia: 0€', 'Generali', 'red'],
+      [ICON.infortunio, 'Infortunio del conducente', 'Franchigia: 10% invalidità', 'AIG', 'grey'],
+      [ICON.tutela, 'Tutela legale e perdite pecuniarie', '', 'Vittoria', 'grey'],
+    ];
+    const PPU_SERVIZI = [
+      [ICON.doc, 'Immatricolazione e Gestione Bollo*'],
+      [ICON.manut, 'Manutenzione ordinaria e straordinaria'],
+      [ICON.settings, 'Gestione sinistri e multe'],
+      [ICON.headset, 'Customers care dedicato'],
+      [ICON.telematica, 'Telematica'],
+      [ICON.phone, "Un'app mobile che ti consente di entrare a far parte del nostro ecosistema, offrendoti una vasta gamma di servizi."],
+      [ICON.truck, 'Consegna a domicilio'],
+      [ICON.doc, 'Gestione voltura'],
+      [ICON.user, 'Invita un amico e risparmi 200€ sul tuo noleggio'],
+    ];
+
+    /* ===== La tua auto ===== */
+    document.getElementById('pv-repr-ico').innerHTML = I.info;
+    document.getElementById('pv-img').src = car.image;
+    document.getElementById('pv-img').alt = car.brand + ' ' + car.name;
+    document.getElementById('pv-carname').textContent = car.brand + ' ' + car.name;
+    document.getElementById('pv-carall').textContent = car.modification;
+    const listino = Math.round((car.priceFlat || 300) * 84 / 250) * 250;
+    document.getElementById('pv-listino').textContent = nf(listino) + ' €';
+
+    const row = (k, v) => `<div class="pv-row"><span class="k">${k}</span><span class="v">${v}</span></div>`;
+    document.getElementById('pv-specs').innerHTML = [
+      row('Tipologia veicolo', car.typology),
+      row('Alimentazione', car.fuel),
+      row('Cambio', car.gearbox),
+      row('Porte', car.doors),
+      row('Posti', car.seats),
+      row('Neopatentati', car.newLicense ? 'Sì' : 'No'),
+    ].join('');
+    document.getElementById('pv-stato').innerHTML = [
+      row('Stato veicolo', car.secondhand ? 'Usato garantito' : 'Nuovo'),
+      row('Disponibilità', 'In stock'),
+      row('Tempi di consegna', (car.deliveryEta || 180) + ' giorni'),
+      row('Colore', 'n.d.'),
+    ].join('');
+
+    /* ===== Condizioni noleggio ===== */
+    const durata = params.get('durata') || car.duration || '36';
+    const anticipo = params.get('anticipo') || car.advance || 2500;
+    const km = params.get('km') || car.distance || 10000;
+    document.getElementById('pv-cond1').innerHTML = [
+      row('Formula', isPPU ? 'Pay per Use' : 'Rata fissa'),
+      row('Durata', durata + ' mesi'),
+      row('Percorrenza', isPPU ? 'A consumo' : nf(km) + ' km/anno'),
+      row('Anticipo', `${nf(anticipo)} € <span style="font-weight:400;font-size:12px;">iva incl.</span>`),
+    ].join('');
+    document.getElementById('pv-prot-ico').innerHTML = I.info;
+    document.getElementById('pv-prot-val').textContent = 'Massima';
+    document.getElementById('pv-cond2').innerHTML = [
+      row('Cambio gomme', isPPU ? 'Incluso' : 'Non incluso'),
+      row('Auto sostitutiva', 'Sì, utilitaria'),
+    ].join('');
+    const promoName = car.promo && car.label ? (car.label.name || 'Sconto di lancio') : 'Nessuna';
+    document.getElementById('pv-cond3').innerHTML = [
+      row('Convenzione', 'Nessuna'),
+      row('Promozione', promoName + (car.promo ? '*' : '')),
+    ].join('');
+    if (car.promo && car.label && car.label.description) {
+      document.getElementById('pv-promo-desc').textContent = '*' + car.label.description + '.';
+    } else {
+      document.getElementById('pv-promo-desc').remove();
+    }
+
+    /* ===== Cosa è incluso ===== */
+    document.getElementById('pv-cover').innerHTML = PPU_COVER.map(([ic, t, fr, partner, tone]) =>
+      `<div class="pv-cov">
+        <div class="pv-cov-top"><span class="icon">${ic}</span><span class="t">${t}</span>${partner ? `<span class="pv-partner ${tone}">${partner}</span>` : ''}</div>
+        ${fr ? `<p class="pv-cov-sub">${fr}</p>` : ''}
+      </div>`).join('');
+    document.getElementById('pv-servizi').innerHTML = PPU_SERVIZI.map(([ic, t]) =>
+      `<div class="pv-srv"><span class="icon">${ic}</span><span>${t}</span></div>`).join('');
+
+    /* ===== La tua rata Flee ===== */
+    const unit = (u, cls) => `<div class="pv-unit"><span class="u"><b>€</b>${u}</span><span class="iva">iva incl.</span></div>`;
+    const priceLine = (mensile, perKm) => {
+      let h = `<span class="num">${nf(mensile, 2)}</span>${unit('/mese')}`;
+      if (perKm != null) h += `<span class="plus">+</span><span class="num">${nf(perKm, 3)}</span>${unit('/km')}`;
+      return `<div class="pv-price">${h}</div>`;
+    };
+    let rataHTML = `<div class="pv-rata"><div><p class="lbl">Rata mensile:</p>${priceLine(pr.monthly, pr.perKm)}</div>`;
+    if (car.promo && pr.disc) {
+      rataHTML += `<div class="pv-rata promo"><div><p class="lbl" style="color:var(--ottanio-flee)">Per i primi ${durata} mesi paghi:</p>${priceLine(pr.monthlyPromo, pr.perKm)}</div></div>`;
+    }
+    rataHTML += `</div>`;
+    document.getElementById('pv-rata').innerHTML = rataHTML;
+
+    /* ===== hint PPU ===== */
+    if (isPPU) {
+      const hint = document.getElementById('pv-hint');
+      hint.hidden = false;
+      document.getElementById('pv-hint-ico').innerHTML = I.bulb;
+      document.getElementById('pv-maxppu').textContent = nf(pr.monthly + pr.perKm * 2000, 2);
+      document.getElementById('pv-flat').textContent = nf(car.priceFlat, 2);
+    }
+    document.getElementById('pv-next-ico').innerHTML = I.bulb;
+
+    /* ===== clearance sticky bar ===== */
+    const sticky = document.getElementById('pv-sticky');
+    const footer = document.getElementById('flee-footer');
+    const sync = () => { footer.style.marginBottom = sticky.offsetHeight + 'px'; };
+    sync();
+    window.addEventListener('resize', sync);
+  })();
+  </script>
+</body>
+</html>
