@@ -156,7 +156,7 @@
     <main>
       <div class="pv-wrap">
         <div>
-          <p class="pv-hello">Ciao <b id="pv-nome">{nome cognome/ragione sociale}</b>,<br>ecco il tuo preventivo Flee!</p>
+          <p class="pv-hello" id="pv-hello">Ciao, ecco il tuo preventivo Flee!</p>
         </div>
 
         <div>
@@ -266,8 +266,10 @@
     const isPPU = kind === 'ppu';
     const pr = pricing(car, kind);
 
-    const nome = params.get('nome') || '{nome cognome/ragione sociale}';
-    document.getElementById('pv-nome').textContent = nome;
+    const nome = params.get('nome');
+    document.getElementById('pv-hello').textContent = nome
+      ? `Ciao ${nome}, ecco il tuo preventivo Flee!`
+      : 'Ciao, ecco il tuo preventivo Flee!';
 
     /* iconos coberturas/servizi (mismos que la scheda) */
     const _s = (paths, sw, extra) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw || '1.3'}" stroke-linecap="round" stroke-linejoin="round"${extra ? ' ' + extra : ''} xmlns="http://www.w3.org/2000/svg">${paths}</svg>`;
