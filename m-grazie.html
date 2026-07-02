@@ -38,106 +38,40 @@
 <link rel="stylesheet" href="flee-library/site.css">
 <link rel="stylesheet" href="m-app.css">
 <style>
-  body { background: var(--ottanio-flee); color: #fff; }
-  .ty { position: relative; overflow: hidden; width: 100%; max-width: 430px; margin: 0 auto; min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center; text-align: center;
-    padding: calc(28px + var(--safe-top)) 24px calc(32px + var(--safe-bottom)); }
+  .ty-main { padding: 48px 24px 8px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .ty-main h1 { font-size: 32px; font-weight: 500; color: var(--ottanio-flee); line-height: 1.2; }
+  .ty-main p { font-size: 16px; line-height: 1.5; color: var(--ottanio-flee); margin-top: 24px; }
+  .ty-main p b { font-weight: 600; }
+  .ty-home { margin-top: 32px; height: 56px; padding: 0 32px; border-radius: 48px; background: var(--secondary-200);
+    display: inline-flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: var(--ottanio-flee); }
 
-  .ty-logo { display: block; width: 78px; margin-bottom: auto; }
-  .ty-logo svg { display: block; width: 100%; }
-
-  .ty-body { display: flex; flex-direction: column; align-items: center; margin: 32px 0 auto; position: relative; z-index: 2; }
-  .ty-check { width: 88px; height: 88px; border-radius: 50%; background: var(--green-flee); color: var(--ottanio-flee);
-    display: flex; align-items: center; justify-content: center; margin-bottom: 28px; }
-  .ty-check svg { width: 44px; height: 44px; }
-  .ty h1 { font-size: 32px; font-weight: 600; line-height: 1.1; letter-spacing: -0.01em; }
-  .ty-lead { font-size: 16px; line-height: 1.5; margin-top: 16px; color: rgba(255,255,255,.9); }
-  .ty-lead b { color: #fff; font-weight: 700; }
-
-  .ty-vehicle { display: inline-flex; align-items: center; gap: 14px; background: rgba(255,255,255,.08);
-    border-radius: 16px; padding: 12px 20px 12px 12px; margin-top: 28px; }
-  .ty-vehicle img { width: 84px; height: 56px; object-fit: contain; flex-shrink: 0; }
-  .ty-vehicle .v-txt { text-align: left; }
-  .ty-vehicle .v-txt b { display: block; font-size: 16px; font-weight: 600; }
-  .ty-vehicle .v-txt span { font-size: 13px; color: rgba(255,255,255,.7); }
-
-  .ty-steps { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 36px; text-align: left; }
-  .ty-step { display: flex; align-items: flex-start; gap: 14px; background: rgba(255,255,255,.06); border-radius: 16px; padding: 18px 20px; }
-  .ty-step .n { width: 30px; height: 30px; border-radius: 50%; background: var(--green-flee); color: var(--ottanio-flee);
-    display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; }
-  .ty-step h3 { font-size: 16px; font-weight: 600; }
-  .ty-step p { font-size: 14px; line-height: 1.45; color: rgba(255,255,255,.75); margin-top: 4px; }
-
-  .ty-cta { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 32px; position: relative; z-index: 2; }
-  .ty-cta .btn { width: 100%; }
-  .btn-ghost-light { border: 1px solid rgba(255,255,255,.45); color: #fff; background: transparent; }
-
-  /* doodles */
-  .ty-doodle { position: absolute; pointer-events: none; z-index: 1; }
-  .ty-doodle svg { width: 100%; height: 100%; display: block; }
-  .d-ric { top: 8%; left: -10px; width: 62px; height: 51px; color: var(--green-flee); opacity: .85; }
-  .d-star { bottom: 12%; right: 4px; width: 48px; height: 48px; }
-  .d-exp1 { top: 14%; right: 14px; width: 24px; height: 27px; color: #fff; opacity: .8; }
-  .d-exp2 { bottom: 26%; left: 12px; width: 22px; height: 24px; color: var(--green-flee); opacity: .8; }
+  .ty-aldo { margin: 40px 16px 0; background: #fff; border: 1px solid var(--card-border); border-radius: 24px;
+    padding: 32px 24px; text-align: center; box-shadow: 0 -3px 18px rgba(0,0,0,.06); }
+  .ty-aldo h2 { font-size: 22px; font-weight: 700; color: var(--ottanio-flee); }
+  .ty-aldo p { font-size: 15px; line-height: 1.5; color: rgba(35,35,35,.7); margin-top: 12px; }
+  .ty-aldo .btn { margin-top: 20px; width: 100%; }
 </style>
 </head>
 <body>
-  <div class="ty">
-    <span class="ty-doodle d-ric" data-doodle="ricciolo"></span>
-    <span class="ty-doodle d-star" data-doodle="star"></span>
-    <span class="ty-doodle d-exp1" data-doodle="explosion"></span>
-    <span class="ty-doodle d-exp2" data-doodle="explosion"></span>
+  <div class="app">
+    <div id="flee-header"></div>
+    <main>
+      <section class="ty-main">
+        <h1>📩 Controlla la posta!</h1>
+        <p>A breve riceverai una mail da <b>info@driveflee.com</b> con il tuo preventivo. Se non la trovi, dai un'occhiata anche nello spam… a volte fa il timido!</p>
+        <a class="ty-home" href="m-catalogo.html">Torna alla Homepage</a>
+      </section>
 
-    <span class="ty-logo" id="logo"></span>
-
-    <div class="ty-body">
-      <div class="ty-check"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-      <h1 id="ty-title">Grazie, la tua richiesta è partita!</h1>
-      <p class="ty-lead" id="ty-lead"></p>
-      <div id="ty-vehicle"></div>
-
-      <div class="ty-steps">
-        <div class="ty-step"><div class="n">1</div><div><h3>Ti contattiamo</h3><p>Un consulente Flee ti scriverà o chiamerà per confermare i dettagli.</p></div></div>
-        <div class="ty-step"><div class="n">2</div><div><h3>Prepariamo il preventivo</h3><p>Calcoliamo la tariffa su misura in base ai dati che ci hai dato.</p></div></div>
-        <div class="ty-step"><div class="n">3</div><div><h3>Scegli e parti</h3><p>Se ti convince, firmi tutto online e pensiamo noi alla consegna.</p></div></div>
-      </div>
-    </div>
-
-    <div class="ty-cta">
-      <a class="btn btn-primary" href="m-catalogo.html">Esplora altri veicoli</a>
-      <a class="btn btn-ghost-light" href="m-catalogo.html">Torna alla home</a>
-    </div>
+      <section class="ty-aldo">
+        <h2>Hai domande? Parlane direttamente con Aldo</h2>
+        <p>Hai dubbi sul noleggio, sull'ecosistema o altro? Chiedi ad Aldo, il nostro chatbot spavaldo! Ti darà subito tutte le informazioni di cui hai bisogno.</p>
+        <button class="btn btn-primary">Parla con Aldo</button>
+      </section>
+    </main>
+    <div id="flee-footer"></div>
   </div>
 
   <script src="flee-library/data/cars.js"></script>
   <script src="m-app.js"></script>
-  <script>
-  (function () {
-    document.getElementById('logo').innerHTML = MF.LOGO;
-
-    const DOODLES = {
-      ricciolo: '<svg viewBox="0 0 82 68" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M79.9645 25.9765C77.852 30.6397 73.8855 34.5453 68.4205 37.2199C64.942 38.9321 61.213 39.76 57.2543 39.7278C56.5366 42.2449 55.4254 44.8455 53.7467 47.4251C51.8103 50.3945 47.4362 55.7484 39.9101 58.2868C38.9978 58.6034 32.6068 60.5919 25.1616 58.8338C23.8016 60.8233 22.0744 62.5568 20.0303 63.97C14.189 67.9814 6.49791 68.5264 0.0000344453 65.4072L1.62842 62.0042C6.91827 64.5522 13.1453 64.0991 17.8793 60.8674C19.2025 59.945 20.3796 58.852 21.3616 57.6301C20.0822 57.0989 18.8116 56.4545 17.5305 55.65C17.2276 55.4445 9.85269 50.7097 7.07789 41.8222C6.09149 38.6728 6.11112 36.3523 7.14207 34.4968C8.83478 31.4402 12.7293 30.2381 15.6295 30.4163C22.2898 30.8389 27.6499 38.6738 28.4928 45.7504C28.8768 49.0354 28.3469 52.3638 27.0442 55.3821C32.968 56.4992 37.9366 54.9474 38.6853 54.6865C45.1355 52.5205 48.8844 47.8924 50.5614 45.3354C51.8535 43.3407 52.7818 41.3407 53.4106 39.3858C52.5333 39.2499 51.6577 39.0913 50.7629 38.8857C47.9011 38.2097 39.2044 36.1502 35.1446 28.2791C34.2937 26.6199 30.2637 18.0681 35.2959 12.4462C37.7632 9.67707 41.6925 8.3183 45.2855 8.95966C52.4035 10.2372 55.9408 18.9786 57.1342 22.6903C57.4091 23.5538 59.0339 29.0517 58.0245 35.9399C61.1041 35.8588 64.0027 35.1717 66.7013 33.8319C72.5458 30.9589 76.3731 26.4962 77.504 21.2792C78.8945 14.7618 76.0341 7.57507 70.2206 2.96067L72.5661 0C79.5196 5.47634 82.9038 14.1377 81.1996 22.0651C80.9138 23.4089 80.4714 24.718 79.921 25.9503L79.9645 25.9765ZM37.2448 16.3983C35.4074 20.4454 38.3934 26.2987 38.5309 26.5824C41.7989 32.9128 48.9533 34.6029 51.6585 35.244C52.5532 35.4496 53.4271 35.6309 54.3062 35.7442C55.3049 29.5836 53.8419 24.6446 53.5827 23.8733C52.8102 21.4917 49.9081 13.6643 44.6545 12.7128C42.3637 12.3084 39.7435 13.2218 38.1259 15.0093C37.7516 15.4357 37.4416 15.9127 37.2221 16.3966L37.2448 16.3983Z" fill="currentColor"></path></svg>',
-      explosion: '<svg viewBox="0 0 31 34" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.6711 33.5048L17.8436 23.7902C17.8436 23.7902 29.9721 28.5932 30.3858 27.6301C30.7995 26.6669 21.0749 18.5723 22.3653 18.3929C23.6639 18.217 32.5597 17.5517 29.5391 16.3805C29.5391 16.3805 18.47 14.3313 20.4504 14.0373C22.4271 13.7515 28.2971 7.52027 28.2971 7.52027C28.2971 7.52027 29.5605 5.9799 16.7427 12.1153C15.0806 12.9117 13.4072 -4.14237 13.141 0.952146C12.8748 6.04667 12.3661 15.6156 12.3661 15.6156C12.3661 15.6156 5.63764 14.5119 0.916816 13.2539C-3.80401 11.996 11.2397 19.323 11.2397 19.323C11.2397 19.323 -0.502939 25.2152 0.239631 25.1136C0.974017 25.0083 11.8784 23.4407 11.8784 23.4407C11.8784 23.4407 12.4326 36.3658 13.6665 33.4929L13.6711 33.5048Z" fill="currentColor"></path></svg>',
-      star: '<svg viewBox="0 0 65 64" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M30.1648 48.1306L24.3481 46.3476L19.6451 61.4361L25.4619 63.219L30.1648 48.1306Z" fill="#E0218A"/><path d="M44.5504 1.78297L38.7337 0L34.0307 15.0884L39.8474 16.8714L44.5504 1.78297Z" fill="#20E775"/><path d="M47.2934 25.041L48.6067 30.9767L64.0221 27.4511L62.7088 21.5155L47.2934 25.041Z" fill="#E0218A"/><path d="M0 35.7479L1.31336 41.6836L16.7288 38.1581L15.4154 32.2224L0 35.7479Z" fill="#20E775"/><path d="M12.5636 5.92008L8.02833 10.1114L18.6962 21.652L23.2314 17.4607L12.5636 5.92008Z" fill="#E0218A"/><path d="M45.4693 41.5295L40.9341 45.7209L51.6019 57.2615L56.1372 53.0701L45.4693 41.5295Z" fill="#20E775"/></svg>',
-    };
-    document.querySelectorAll('[data-doodle]').forEach(el => { const t = el.dataset.doodle; if (DOODLES[t]) el.innerHTML = DOODLES[t]; });
-
-    const params = new URLSearchParams(location.search);
-    const car = MF.carById(params.get('id'));
-    const nome = params.get('nome') || '';
-    const email = params.get('email') || '';
-
-    document.getElementById('ty-title').textContent = nome ? `Grazie ${nome}, la tua richiesta è partita!` : 'Grazie, la tua richiesta è partita!';
-    document.getElementById('ty-lead').innerHTML =
-      'Abbiamo ricevuto la tua richiesta di preventivo.' +
-      (email ? ` Ti contatteremo al più presto all'indirizzo <b>${email}</b>.` : ' Ti contatteremo al più presto.');
-
-    if (car) {
-      document.getElementById('ty-vehicle').outerHTML =
-        `<div class="ty-vehicle"><img src="${car.image}" alt="${car.brand} ${car.name}">
-          <div class="v-txt"><b>${car.brand} ${car.name}</b><span>${car.modification}</span></div></div>`;
-    }
-  })();
-  </script>
 </body>
 </html>

@@ -318,11 +318,7 @@
     }
 
     function submit() {
-      const q = new URLSearchParams();
-      q.set('id', car.slug);
-      if (data.nome) q.set('nome', data.nome);
-      if (data.email) q.set('email', data.email);
-      location.href = 'm-grazie.html?' + q.toString();
+      location.href = 'm-grazie.html';
     }
 
     /* ---- Dropdown custom: abrir/seleccionar/cerrar (delegado) ---- */
