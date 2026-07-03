@@ -4,7 +4,61 @@
    Depende de: flee-library/data/cars.js (window.FLEE_CARS)
    =================================================================== */
 window.MF = (function () {
-  const cars = window.FLEE_CARS || [];
+  /* ---------- vehículos broker (datos reales de promo.driveflee.com/noleggio) ---------- */
+  const BROKER_CARS = [
+    {
+      slug: 'bmw-serie-1-120i-m-sport', kind: 'broker',
+      brand: 'BMW', name: 'Serie 1', modification: '120i M Sport',
+      typology: 'Berlina', doors: 5, seats: 5, gearbox: 'Manuale', fuel: 'Benzina',
+      power: 178, displacement: 1998,
+      duration: '48', advance: 3500, distance: '10000', priceFlat: 169,
+      priceFix: 169, priceVariable: 0.24,
+      secondhand: false, fastDelivery: true, deliveryEta: 30, newLicense: false,
+      promo: true, label: { name: 'Promo Maggio', description: 'Sconto di 20 €/mese per i primi 3 mesi', discount: 20 },
+      image: 'https://vehicles-img.moov-drive.com/7a82cf1c-4359-4b2c-b9f1-7c3e71d8e385/2024-09-18T10%3A28%3A56.303Z-TGF0ZXJhbGUgU2luaXN0cmE%3D',
+      shortDescription: '5 porte | Manuale | Benzina',
+    },
+    {
+      slug: 'alfa-romeo-stelvio-quadrifoglio-verde', kind: 'broker',
+      brand: 'Alfa Romeo', name: 'Stelvio', modification: 'Quadrifoglio Verde',
+      typology: 'SUV', doors: 5, seats: 5, gearbox: 'Automatico', fuel: 'Diesel',
+      power: 510, displacement: 2891,
+      duration: '24', advance: 1200, distance: '10000', priceFlat: 239,
+      priceFix: 239, priceVariable: 0.36,
+      secondhand: true, fastDelivery: true, deliveryEta: 25, newLicense: false,
+      promo: true, label: { name: 'Promo Estate', description: 'Promo valida fino al 31/07', discount: 0 },
+      image: 'https://vehicles-img.moov-drive.com/63057800-e823-49c1-ad3e-f032aeafbcef/2024-09-13T12%3A43%3A10.944Z-TGF0ZXJhbGUgU2luaXN0cmE%3D',
+      shortDescription: '5 porte | Automatico | Diesel',
+    },
+    {
+      slug: 'audi-a3-40-tfsi-sportback', kind: 'broker',
+      brand: 'Audi', name: 'A3', modification: '40 TFSI Sportback',
+      typology: 'Berlina', doors: 3, seats: 4, gearbox: 'Manuale', fuel: 'Benzina',
+      power: 190, displacement: 1984,
+      duration: '36', advance: 4000, distance: '10000', priceFlat: 269,
+      priceFix: 269, priceVariable: 0.12,
+      secondhand: true, fastDelivery: false, deliveryEta: 40, newLicense: false,
+      promo: false, label: null,
+      image: 'https://vehicles-img.moov-drive.com/1e40ab20-f74a-4c95-94cb-878402a0cbb6/2025-10-28T11%3A10%3A56.350Z-651253.681-TGF0ZXJhbGUgU2luaXN0cmE%3D',
+      shortDescription: '3 porte | Manuale | Benzina',
+    },
+    {
+      slug: 'toyota-aygo-x-10-firefly-65cv-hybrid-icon', kind: 'broker',
+      brand: 'Toyota', name: 'Aygo X', modification: '1.0 FireFly 65cv S&S 6m Hybrid Icon',
+      typology: 'Citycar', doors: 5, seats: 4, gearbox: 'Automatico', fuel: 'Ibrida',
+      power: 65, displacement: 998,
+      duration: '48', advance: 2800, distance: '10000', priceFlat: 129,
+      priceFix: 129, priceVariable: 0.24,
+      secondhand: false, fastDelivery: false, deliveryEta: 90, newLicense: true,
+      promo: true, label: { name: 'Promo Buoni Propositi', description: 'Promo valida fino al 30/09', discount: 0 },
+      image: 'https://vehicles-img.moov-drive.com/020952c3-1ad3-41d0-b424-d4f644ba134b/2026-02-12T16%3A04%3A36.552Z-622038.651-VG95b3RhIEF5Z28gWCAtIEh5YnJpZC5wbmc%3D',
+      shortDescription: '5 porte | Automatico | Ibrida',
+    },
+  ];
+
+  /* Catálogo = coches de la librería (todos PPU) + los 4 broker reales intercalados */
+  const cars = (window.FLEE_CARS || []).slice();
+  [[1, 0], [5, 1], [9, 2], [14, 3]].forEach(([pos, i]) => cars.splice(Math.min(pos, cars.length), 0, BROKER_CARS[i]));
 
   /* ---------- formato ---------- */
   const nf = (v, d = 0) => Number(v).toLocaleString('it-IT', { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -13,11 +67,9 @@ window.MF = (function () {
   const monthly = (v) => nf(Math.round(v));         // 169
 
   /* ---------- formula (broker | ppu) ----------
-     Determinístico por slug, estable entre catálogo / ficha / preventivo. */
+     Broker = solo los vehículos reales de promo.driveflee.com; el resto PPU. */
   function kindOf(c) {
-    let h = 0;
-    for (const ch of (c.slug || '')) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
-    return (h % 2) ? 'broker' : 'ppu';
+    return c.kind || 'ppu';
   }
 
   function carById(id) { return cars.find(c => c.slug === id) || null; }
@@ -38,6 +90,7 @@ window.MF = (function () {
 
   /* ---------- iconos (inline svg) ---------- */
   const I = {
+    car: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.25 14H5.75M18.25 14H15.75M22 9L19.4 10L18.55 6C18.3 4.85 17.3 4 16.1 4H8C6.85 4 5.85 4.8 5.55 5.95L4.65 10L2 9M3.25 20H5.5C6.35 20 7 19.35 7 18.5V17.5H17V18.5C17 19.35 17.65 20 18.5 20H20.75C21.45 20 22 19.45 22 18.75V13C22 11.35 20.65 10 19 10H5C3.35 10 2 11.35 2 13V18.75C2 19.45 2.55 20 3.25 20Z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     gear: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 6C5.33 6 6 5.33 6 4.5C6 3.67 5.33 3 4.5 3C3.67 3 3 3.67 3 4.5C3 5.33 3.67 6 4.5 6ZM4.5 6V18M4.5 18C3.67 18 3 18.67 3 19.5C3 20.33 3.67 21 4.5 21C5.33 21 6 20.33 6 19.5C6 18.67 5.33 18 4.5 18ZM19.5 6C20.33 6 21 5.33 21 4.5C21 3.67 20.33 3 19.5 3C18.67 3 18 3.67 18 4.5C18 5.33 18.67 6 19.5 6ZM19.5 6V9C19.5 10.66 18.16 12 16.5 12H4.5M12 6C12.83 6 13.5 5.33 13.5 4.5C13.5 3.67 12.83 3 12 3C11.17 3 10.5 3.67 10.5 4.5C10.5 5.33 11.17 6 12 6ZM12 6V18M12 18C11.17 18 10.5 18.67 10.5 19.5C10.5 20.33 11.17 21 12 21C12.83 21 13.5 20.33 13.5 19.5C13.5 18.67 12.83 18 12 18Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     fuel: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 5H13.3C14.4 5 15.4 5.4 16.1 6.2L18.8 8.9C19.6 9.6 20 10.6 20 11.7V19C20 20.1 19.1 21 18 21H6C4.9 21 4 20.1 4 19V7C4 5.9 4.9 5 6 5ZM6 5V3C6 2.4 6.4 2 7 2H11C11.6 2 12 2.4 12 3V5H6ZM8 14H10M8 17H12M16.6 12.6C16.1 13.1 15.3 13.1 14.8 12.6L12.3 10.1C11.8 9.6 11.8 8.8 12.3 8.3C12.8 7.8 13.6 7.8 14.1 8.3L16.6 10.8C17.1 11.3 17.1 12.1 16.6 12.6Z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     refresh: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M4.5 8.2A8 8 0 0 1 18.4 6.4"/><path d="M4 3.6V8.2H8.6"/><path d="M19.5 15.8A8 8 0 0 1 5.6 17.6"/><path d="M20 20.4V15.8H15.4"/></svg>',
