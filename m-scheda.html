@@ -47,7 +47,7 @@
     background: #fff; padding: 16px; display: flex; flex-direction: column; gap: 16px; align-items: center; overflow: hidden; }
   .pcard.promo { border: 2px solid var(--promo); }
   .pcard-tagrow { display: flex; align-items: center; width: 100%; min-height: 24px; }
-  .pcard-img { width: 100%; height: 140px; }
+  .pcard-img { width: 100%; height: 140px; overflow: hidden; }
   .pcard-img img { width: 100%; height: 100%; object-fit: contain; }
   .pcard-repr { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ottanio-flee); }
   .pcard-repr .icon { width: 16px; height: 16px; flex-shrink: 0; }
@@ -216,7 +216,7 @@
   .riep-card { position: relative; overflow: hidden; background: var(--ottanio-700); border-radius: 16px;
     padding: 40px 24px 32px; display: flex; flex-direction: column; align-items: center; gap: 16px; color: #fff; }
   .riep-card .mcard-promotag { background: #f4d9ed; }
-  .riep-img { width: 100%; }
+  .riep-img { width: 100%; overflow: hidden; }
   .riep-img img { width: 100%; height: 150px; object-fit: contain; display: block; }
   .riep-repr { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #fff; }
   .riep-repr .icon { width: 18px; height: 18px; }
@@ -332,7 +332,7 @@
         <div class="pcard${car.promo ? ' promo' : ''}">
           ${promo}
           <div class="pcard-tagrow">${deliver}</div>
-          <div class="pcard-img"><img src="${car.image}" alt="${car.brand} ${car.name}"></div>
+          <div class="pcard-img"><img src="${car.image}" alt="${car.brand} ${car.name}"${MF.imgStyle(car)}></div>
           <div class="pcard-repr"><span class="icon">${I.info}</span>L'immagine è puramente rappresentativa</div>
           ${usato}
           <div class="pcard-title">
@@ -646,7 +646,7 @@
         <div class="riep-head"><button class="riep-close" type="button">Chiudi <span class="riep-x"><span class="icon">${I.close}</span></span></button></div>
         <div class="riep-scroll">
           <div class="riep-card">${promo}
-            <div class="riep-img"><img src="${car.image}" alt="${car.brand} ${car.name}"></div>
+            <div class="riep-img"><img src="${car.image}" alt="${car.brand} ${car.name}"${MF.imgStyle(car)}></div>
             <div class="riep-repr"><span class="icon">${I.info}</span>L'immagine è rappresentativa</div>
             <div class="riep-name">${car.brand} ${car.name}</div>
             <div class="riep-version">${car.modification}</div>

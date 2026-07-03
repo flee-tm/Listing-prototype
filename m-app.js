@@ -14,7 +14,7 @@ window.MF = (function () {
       typology: 'Compatta', doors: 5, seats: 5, gearbox: 'Manuale', fuel: 'Benzina',
       power: 100, displacement: 1199,
       duration: '36', advance: 3660, distance: '10000', priceFlat: 254.98,
-      priceFix: 254.98, priceVariable: 0.24,
+      priceFix: 254.98, priceVariable: 0.24, imgScale: 1.05,
       secondhand: false, fastDelivery: false, deliveryEta: null, newLicense: false,
       promo: false, label: null,
       image: 'https://vehicles-img.moov-drive.com/6aa3f2bf-f2dd-44e1-8396-41b97d95823e/2026-04-10T12%3A45%3A53.178Z-59046.507-TGF0ZXJhbGUgU2luaXN0cmE%3D',
@@ -26,7 +26,7 @@ window.MF = (function () {
       typology: 'Citycar', doors: 5, seats: 5, gearbox: 'Manuale', fuel: 'Ibrido benzina',
       power: 65, displacement: 999,
       duration: '36', advance: 2440, distance: '10000', priceFlat: 267.18,
-      priceFix: 267.18, priceVariable: 0.24,
+      priceFix: 267.18, priceVariable: 0.24, imgScale: 1.1,
       secondhand: false, fastDelivery: false, deliveryEta: null, newLicense: true,
       promo: false, label: null,
       image: 'https://vehicles-img.moov-drive.com/fd46847a-38ba-4655-8515-5cbcc9f6488a/2025-11-06T08%3A52%3A06.237Z-370104.377-TGF0ZXJhbGUgU2luaXN0cmE%3D',
@@ -62,7 +62,7 @@ window.MF = (function () {
       typology: 'Wagon', doors: 5, seats: 5, gearbox: 'Automatico', fuel: 'Ibrido benzina',
       power: 110, displacement: 1199,
       duration: '36', advance: 4880, distance: '10000', priceFlat: 315.98,
-      priceFix: 315.98, priceVariable: 0.24,
+      priceFix: 315.98, priceVariable: 0.24, imgScale: 1.25,
       secondhand: false, fastDelivery: false, deliveryEta: null, newLicense: false,
       promo: false, label: null,
       image: 'https://vehicles-img.moov-drive.com/cb0d913f-9bd6-4438-bcf6-f3103c888494/2025-11-11T16%3A17%3A07.733Z-1002964.175-TGF0ZXJhbGUgU2luaXN0cmE%3D',
@@ -99,6 +99,12 @@ window.MF = (function () {
   }
 
   function carById(id) { return cars.find(c => c.slug === id) || null; }
+
+  /* Compensa el margen blanco dispar de algunas fotos (imgScale por coche)
+     para que el coche se vea del mismo tamaño en todas las cards. */
+  function imgStyle(c) {
+    return c.imgScale ? ` style="transform: scale(${c.imgScale})"` : '';
+  }
 
   /* ---------- precio según formula ----------
      ppu:    priceFix €/mese + priceVariable €/km
@@ -216,5 +222,5 @@ window.MF = (function () {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', renderChrome);
   else renderChrome();
 
-  return { cars, kindOf, carById, pricing, nf, eur0, money, monthly, I, LOGO, renderChrome };
+  return { cars, kindOf, carById, pricing, imgStyle, nf, eur0, money, monthly, I, LOGO, renderChrome };
 })();

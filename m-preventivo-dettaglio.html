@@ -74,7 +74,8 @@
   .pv-row .k.with-info { display: inline-flex; align-items: center; }
 
   /* la tua auto */
-  .pv-carimg { width: 100%; aspect-ratio: 24/16; object-fit: cover; border-radius: 12px; }
+  .pv-imgwrap { width: 100%; aspect-ratio: 24/16; overflow: hidden; border-radius: 12px; }
+  .pv-carimg { width: 100%; height: 100%; object-fit: contain; }
   .pv-repr { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 8px; font-size: 12px; color: var(--ottanio-flee); }
   .pv-repr .icon { width: 16px; height: 16px; }
   .pv-carname { font-size: 22px; font-weight: 600; color: var(--ottanio-flee); margin-top: 16px; }
@@ -171,7 +172,7 @@
         <!-- La tua auto -->
         <div class="pv-card">
           <div class="pv-tab">La tua auto</div>
-          <img class="pv-carimg" id="pv-img" src="" alt="">
+          <div class="pv-imgwrap"><img class="pv-carimg" id="pv-img" src="" alt=""></div>
           <div class="pv-repr"><span class="icon" id="pv-repr-ico"></span>L'immagine è rappresentativa</div>
           <p class="pv-carname" id="pv-carname"></p>
           <p class="pv-carall" id="pv-carall"></p>
@@ -318,6 +319,7 @@
     document.getElementById('pv-repr-ico').innerHTML = I.info;
     document.getElementById('pv-img').src = car.image;
     document.getElementById('pv-img').alt = car.brand + ' ' + car.name;
+    if (car.imgScale) document.getElementById('pv-img').style.transform = `scale(${car.imgScale})`;
     document.getElementById('pv-carname').textContent = car.brand + ' ' + car.name;
     document.getElementById('pv-carall').textContent = car.modification;
     const listino = Math.round((car.priceFlat || 300) * 84 / 250) * 250;
