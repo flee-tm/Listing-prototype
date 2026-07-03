@@ -56,11 +56,35 @@ window.MF = (function () {
       image: 'https://vehicles-img.moov-drive.com/d1c8df75-7157-4bfb-8452-45380217dbee/2025-09-18T10%3A35%3A50.501Z-1035037.661-T1BFTCBDT1JTQS5wbmc%3D',
       shortDescription: '5 porte | Manuale | Benzina',
     },
+    {
+      slug: 'peugeot-2008-ii-2023', kind: 'broker',
+      brand: 'Peugeot', name: '2008 II 2023', modification: '2008 1.2 hybrid Style 110cv e-dcs6',
+      typology: 'Wagon', doors: 5, seats: 5, gearbox: 'Automatico', fuel: 'Ibrido benzina',
+      power: 110, displacement: 1199,
+      duration: '36', advance: 4880, distance: '10000', priceFlat: 315.98,
+      priceFix: 315.98, priceVariable: 0.24,
+      secondhand: false, fastDelivery: false, deliveryEta: null, newLicense: false,
+      promo: false, label: null,
+      image: 'https://vehicles-img.moov-drive.com/cb0d913f-9bd6-4438-bcf6-f3103c888494/2025-11-11T16%3A17%3A07.733Z-1002964.175-TGF0ZXJhbGUgU2luaXN0cmE%3D',
+      shortDescription: '5 porte | Automatico | Ibrido benzina',
+    },
+    {
+      slug: 'fiat-500-iv-2020', kind: 'broker',
+      brand: 'Fiat', name: '500 IV 2020', modification: '500 1.0 hybrid Icon',
+      typology: 'Citycar', doors: 3, seats: 4, gearbox: 'Manuale', fuel: 'Ibrido benzina',
+      power: 70, displacement: 999,
+      duration: '48', advance: 3050, distance: '10000', priceFlat: 328.18,
+      priceFix: 328.18, priceVariable: 0.24,
+      secondhand: false, fastDelivery: false, deliveryEta: null, newLicense: true,
+      promo: false, label: null,
+      image: 'https://vehicles-img.moov-drive.com/e58e5908-6089-4b7a-bb31-1940cb10b77a/2026-05-12T14%3A16%3A50.419Z-331710.439-RmlhdCA1MDAgKDIpLnBuZw%3D%3D',
+      shortDescription: '3 porte | Manuale | Ibrido benzina',
+    },
   ];
 
-  /* Catálogo = coches de la librería (todos PPU) + los 4 broker reales intercalados */
+  /* Catálogo = coches de la librería (todos PPU) + los broker reales intercalados */
   const cars = (window.FLEE_CARS || []).slice();
-  [[1, 0], [5, 1], [9, 2], [14, 3]].forEach(([pos, i]) => cars.splice(Math.min(pos, cars.length), 0, BROKER_CARS[i]));
+  [[1, 0], [5, 1], [9, 2], [13, 3], [17, 4], [21, 5]].forEach(([pos, i]) => cars.splice(Math.min(pos, cars.length), 0, BROKER_CARS[i]));
 
   /* ---------- formato ---------- */
   const nf = (v, d = 0) => Number(v).toLocaleString('it-IT', { minimumFractionDigits: d, maximumFractionDigits: d });
