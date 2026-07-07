@@ -168,14 +168,24 @@
         </a>`;
     }
 
-    /* ---------- filtros (según filter-panel-preview) ---------- */
-    const uniq = (key) => [...new Set(cars.map(c => c[key]).filter(Boolean))].sort();
+    /* ---------- filtros (según filter-panel-preview.html) ---------- */
+    // opciones en orden fijo (como el panel de referencia), filtradas a las presentes en los datos
+    const present = (key, order) => order.filter(v => cars.some(c => c[key] === v));
+    // Alimentazione: etiquetas limpias de la referencia → valores reales de los datos
+    const FUEL_MAP = {
+      'Benzina': ['Benzina'],
+      'Diesel': ['Diesel'],
+      'Ibrida': ['Ibrido benzina', 'Ibrido diesel'],
+      'Elettrica': ['Elettrico'],
+      'GPL': ['GPL'],
+    };
+    const fuelOpts = Object.keys(FUEL_MAP).filter(l => FUEL_MAP[l].some(v => cars.some(c => c.fuel === v)));
     const SECTIONS = [
       { key: 'rata', label: 'Tipo di rata', opts: ['A consumo', 'Fisso'] },
-      { key: 'typology', label: 'Tipologia veicolo', opts: uniq('typology') },
-      { key: 'fuel', label: 'Alimentazione', opts: uniq('fuel') },
-      { key: 'gearbox', label: 'Cambio', opts: uniq('gearbox') },
-      { key: 'brand', label: 'Brand', opts: uniq('brand') },
+      { key: 'typology', label: 'Tipologia veicolo', opts: present('typology', ['Citycar', 'Compatta', 'Crossover', 'SUV', 'Berlina', 'Wagon']) },
+      { key: 'fuel', label: 'Alimentazione', opts: fuelOpts },
+      { key: 'gearbox', label: 'Cambio', opts: present('gearbox', ['Manuale', 'Automatico']) },
+      { key: 'brand', label: 'Brand', opts: [...new Set(cars.map(c => c.brand).filter(Boolean))].sort() },
     ];
     const TOGGLES = [
       { key: 'fastDelivery', label: 'Consegna a breve' },
@@ -250,7 +260,8 @@
         if (t === 'anticipoZero') { if (kindOf(c) !== 'broker') return false; }
         else if (!c[t]) return false;
       }
-      for (const key of ['typology', 'fuel', 'gearbox', 'brand'])
+      if (state.fuel.size && ![...state.fuel].some(l => FUEL_MAP[l].includes(c.fuel))) return false;
+      for (const key of ['typology', 'gearbox', 'brand'])
         if (state[key].size && !state[key].has(c[key])) return false;
       return matchesRata(c);
     }
