@@ -355,7 +355,7 @@
     const cfg = {
       formula: isPPU ? 'ppu' : 'broker',
       durata: DURATE.includes(+car.duration) ? +car.duration : 36,
-      anticipo: car.advance, km: 10000, gomme: true, autoSost: 'no',
+      anticipo: car.advance, km: 10000, gomme: false, autoSost: 'no',
     };
     const base = { durata: +car.duration, anticipo: car.advance, km: 10000 };
     const fmtMesi = v => `${v} mesi`, fmtEur = v => `${eur0(v)}€`, fmtKm = v => `${eur0(v)} km`;
