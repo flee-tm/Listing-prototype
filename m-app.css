@@ -58,7 +58,7 @@ input, select, textarea, button, optgroup, option { font-family: inherit; }
 .mf-legal { font-size: 14px; line-height: 21px; color: var(--text-negative); }
 
 /* ---------------- Hero ---------------- */
-.m-hero { padding: 20px 16px 8px; }
+.m-hero { padding: 20px 16px 8px; text-align: center; }
 .m-hero h1 { font-size: 30px; line-height: 1.08; font-weight: 600; letter-spacing: -0.02em; }
 .m-hero p { font-size: 15px; line-height: 1.4; margin-top: 12px; color: var(--ottanio-700); }
 
