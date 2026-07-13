@@ -234,7 +234,7 @@
         const t = data.tipo;
         if (t === 'Privato') {
           html += field('contratto', 'E sul lavoro come gira?', { required: true, type: 'select', options: ['Contratto a tempo indeterminato', 'Contratto a tempo determinato', 'Contratto di apprendistato', 'Pensionato', 'Disoccupato', 'Altro'], help: 'È utile per capire se si può procedere con il noleggio. In assenza di un contratto stabile, serve un garante valido.' });
-          html += field('guadagno', 'Qual è in media il tuo guadagno netto mensile?', { required: true, type: 'select', options: ['Fino a 1.000 €', '1.000 - 1.500 €', '1.500 - 2.500 €', 'Oltre 2.500 €'], help: HELP_FATT });
+          html += field('guadagno', 'Qual è in media il tuo guadagno netto mensile?', { required: true, type: 'select', options: ['Meno di 1200 €/mese', 'Tra 1200 e 1500 €/mese', 'Tra 1500 e 2000 €/mese', 'Tra 2000 e 2500 €/mese', 'Tra 2500 e 3500 €/mese', 'Più di 3500 €/mese'], help: HELP_FATT });
         } else if (t === 'Società') {
           html += field('tipoSocieta', 'Perfetto, che tipo di società?', { required: true, type: 'select', options: ['S.r.l.', 'S.r.l.s.', 'S.p.A.', 'S.n.c.', 'S.a.s.', 'Società cooperativa', 'Altro'] });
           html += field('piva', 'Inserisci la Partita IVA', { required: true, ph: 'Inserisci la Partita IVA', help: HELP_PIVA });
