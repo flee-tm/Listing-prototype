@@ -70,13 +70,25 @@
   .fields { display: flex; flex-direction: column; gap: 16px; margin-top: 20px; }
   .m-field { display: flex; flex-direction: column; gap: 8px; }
   .m-field > label { font-size: 16px; color: var(--ottanio-flee); }
-  .m-select { position: relative; display: flex; align-items: center; justify-content: space-between;
-    height: 56px; padding: 0 24px; border: 1px solid var(--card-border); border-radius: 16px; background: #fff;
-    font-size: 16px; color: var(--ottanio-flee); }
-  .m-select select { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; border: 0;
-    font-size: 16px; -webkit-appearance: none; appearance: none; }
-  .m-select .m-select-val.is-dim { color: #879da6; }
-  .m-select .icon { width: 24px; height: 24px; color: var(--ottanio-flee); }
+  /* Dropdown custom (componente DropdownInput, mismo del form) */
+  .dd { position: relative; }
+  .dd-field { width: 100%; height: 56px; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 0 24px; border: 1px solid var(--card-border); border-radius: 16px; background: #fff; cursor: pointer;
+    font-family: inherit; font-size: 16px; color: var(--ottanio-flee); text-align: left; transition: border-color .2s ease; }
+  .dd[data-open="true"] .dd-field, .dd-field:focus-visible { border-color: var(--ottanio-flee); outline: none; }
+  .dd-val { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dd-val.is-ph, .dd-val.is-dim { color: #879da6; }
+  .dd-icon { position: relative; width: 24px; height: 24px; flex-shrink: 0; color: var(--ottanio-flee); transition: transform .2s ease, color .2s ease; }
+  .dd-icon::before { content: ''; position: absolute; top: 46%; left: 50%; width: 7px; height: 7px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: translate(-50%, -50%) rotate(45deg); }
+  .dd[data-open="true"] .dd-icon { transform: rotate(180deg); }
+  .dd-panel { position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 45;
+    max-height: 240px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    border: 1px solid var(--ottanio-flee); border-radius: 16px; background: #fff; box-shadow: 0 12px 32px rgba(4,81,104,.18); }
+  .dd-opt { display: flex; align-items: center; width: 100%; min-height: 48px; padding: 0 24px; border: 0;
+    background: var(--secondary-100); color: var(--ottanio-flee); font-family: inherit; font-size: 16px; text-align: left; cursor: pointer; transition: background-color .2s ease; }
+  .dd-opt:hover, .dd-opt:active { background: var(--card-alt); }
+  .dd-opt.sel { font-weight: 500; }
   .m-hint { display: flex; gap: 6px; align-items: flex-start; font-size: 12px; line-height: 1.4; color: #5b747f; }
   .m-hint .icon { width: 15px; height: 15px; flex-shrink: 0; margin-top: 1px; }
   .m-hint b { font-weight: 600; }
@@ -362,26 +374,28 @@
     const labelOf = (pairs, v) => (pairs.find(p => p[0] === v) || ['', ''])[1];
 
     /* ===== Calcola: campos ===== */
-    const numField = (id, label, value, options, fmt, hint) => `
+    const esc = s => String(s).replace(/"/g, '&quot;');
+    const dropdown = (id, label, valLabel, opts, hint, dimClass) => `
       <div class="m-field">
         <label for="${id}">${label}</label>
-        <div class="m-select">
-          <span class="m-select-val" id="${id}-val">${fmt(value)}</span>
-          <span class="icon">${I.chevronDown}</span>
-          <select id="${id}">${options.map(o => `<option value="${o}"${o === value ? ' selected' : ''}>${fmt(o)}</option>`).join('')}</select>
+        <div class="dd" data-dd="${id}" data-open="false">
+          <button type="button" class="dd-field" id="${id}">
+            <span class="dd-val${dimClass ? ' is-dim' : ''}" id="${id}-val">${valLabel}</span>
+            <span class="dd-icon" aria-hidden="true"></span>
+          </button>
+          <div class="dd-panel" hidden>
+            ${opts.map(o => `<button type="button" class="dd-opt${o.sel ? ' sel' : ''}" data-val="${esc(o.value)}">${o.label}</button>`).join('')}
+          </div>
         </div>
         ${hint ? `<div class="m-hint"><span class="icon">${I.bulb}</span><span>${hint}</span></div>` : ''}
       </div>`;
-    const pairField = (id, label, value, pairs, hint, dim) => `
-      <div class="m-field">
-        <label for="${id}">${label}</label>
-        <div class="m-select">
-          <span class="m-select-val${dim && value === dim ? ' is-dim' : ''}" id="${id}-val">${labelOf(pairs, value)}</span>
-          <span class="icon">${I.chevronDown}</span>
-          <select id="${id}">${pairs.map(p => `<option value="${p[0]}"${p[0] === value ? ' selected' : ''}>${p[1]}</option>`).join('')}</select>
-        </div>
-        ${hint ? `<div class="m-hint"><span class="icon">${I.bulb}</span><span>${hint}</span></div>` : ''}
-      </div>`;
+    const numField = (id, label, value, options, fmt, hint) =>
+      dropdown(id, label, fmt(value),
+        options.map(o => ({ value: o, label: fmt(o), sel: o === value })), hint);
+    const pairField = (id, label, value, pairs, hint, dim) =>
+      dropdown(id, label, labelOf(pairs, value),
+        pairs.map(p => ({ value: p[0], label: p[1], sel: p[0] === value })), hint,
+        dim && value === dim);
     const toggleRow = (id, label, sub, on, hint) => `
       <div class="m-field">
         <div class="toggle-row">
@@ -391,6 +405,36 @@
         ${hint ? `<div class="m-hint"><span class="icon">${I.bulb}</span><span>${hint}</span></div>` : ''}
       </div>`;
     const setVal = (id, txt) => { const el = document.getElementById(id + '-val'); if (el) el.textContent = txt; };
+
+    /* ---- Dropdown custom: abrir/seleccionar/cerrar (delegado) ---- */
+    const ddHandlers = {};
+    function closeAllDD() {
+      document.querySelectorAll('.dd[data-open="true"]').forEach(dd => {
+        dd.dataset.open = 'false'; dd.querySelector('.dd-panel').hidden = true;
+      });
+    }
+    document.addEventListener('click', e => {
+      const trigger = e.target.closest('.dd-field');
+      const opt = e.target.closest('.dd-opt');
+      if (trigger) {
+        const dd = trigger.closest('.dd');
+        const willOpen = dd.dataset.open !== 'true';
+        closeAllDD();
+        if (willOpen) { dd.dataset.open = 'true'; dd.querySelector('.dd-panel').hidden = false; }
+        return;
+      }
+      if (opt) {
+        const dd = opt.closest('.dd');
+        const val = opt.dataset.val;
+        dd.querySelectorAll('.dd-opt').forEach(o => o.classList.toggle('sel', o === opt));
+        closeAllDD();
+        const fn = ddHandlers[dd.dataset.dd];
+        if (fn) fn({ target: { value: val } });
+        return;
+      }
+      if (!e.target.closest('.dd')) closeAllDD();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAllDD(); });
 
     function buildFields() {
       const f = document.getElementById('fields');
@@ -410,7 +454,7 @@
           numField('f-anticipo', 'Anticipo', cfg.anticipo, ANTICIPI, fmtEur, "Più alto l'anticipo, più basso il canone. Anche anticipo zero.") +
           numField('f-km', 'Chilometri inclusi', cfg.km, KMS, fmtKm, 'Stima i km che percorri in un anno. In dubbio? Scegli 15.000.');
       }
-      const on = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('change', fn); };
+      const on = (id, fn) => { ddHandlers[id] = fn; };
       on('f-durata', e => { cfg.durata = +e.target.value; setVal('f-durata', fmtMesi(cfg.durata)); renderBar(); });
       on('f-anticipo', e => { cfg.anticipo = +e.target.value; setVal('f-anticipo', fmtEur(cfg.anticipo)); renderBar(); });
       on('f-km', e => { cfg.km = +e.target.value; setVal('f-km', fmtKm(cfg.km)); renderBar(); });
