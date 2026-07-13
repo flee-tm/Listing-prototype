@@ -359,7 +359,8 @@
 
     /* ===== Estado / config ===== */
     const DURATE = [24, 36, 48, 60];
-    const ANTICIPI = [0, 1000, 2000, 3000, 5000];
+    /* Pay per Use (anche convertito a rata fissa) non prevede anticipo 0; solo broker. */
+    const ANTICIPI = isPPU ? [1000, 2000, 3000, 5000] : [0, 1000, 2000, 3000, 5000];
     const KMS = [10000, 15000, 20000, 25000, 30000];
     const TIPORATA = [['ppu', 'Pay per Use'], ['fissa', 'Rata fissa']];
     const AUTOSOST = [['no', 'Nessuna'], ['si', 'Sì, +19 €/mese']];
