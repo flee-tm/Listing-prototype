@@ -176,7 +176,7 @@ window.FLEE_CARS = [
 "newLicense": true,
 "promo": true,
 "label": {
-"name": "Promo Estate fino al 30/06",
+"name": "Promo Vacanze fino al 31/08",
 "description": "Sconto di 80 €/mese per i primi 2 mesi",
 "bg": "#ff23be",
 "color": "#ffffff",
@@ -298,7 +298,7 @@ window.FLEE_CARS = [
 "newLicense": false,
 "promo": true,
 "label": {
-"name": "Promo Estate fino al 30/06",
+"name": "Promo Vacanze fino al 31/08",
 "description": "Sconto di 80 €/mese per i primi 2 mesi",
 "bg": "#ff23be",
 "color": "#ffffff",
@@ -478,7 +478,7 @@ window.FLEE_CARS = [
 "newLicense": false,
 "promo": true,
 "label": {
-"name": "Promo Estate fino al 30/06",
+"name": "Promo Vacanze fino al 31/08",
 "description": "Sconto di 130 €/mese per i primi 2 mesi",
 "bg": "#ff23be",
 "color": "#ffffff",
