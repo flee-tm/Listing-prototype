@@ -84,7 +84,7 @@ window.MF = (function () {
 
   /* Catálogo = coches de la librería (todos PPU) + los broker reales intercalados */
   const cars = (window.FLEE_CARS || []).slice();
-  [[1, 0], [5, 1], [9, 2], [13, 3], [17, 4], [21, 5]].forEach(([pos, i]) => cars.splice(Math.min(pos, cars.length), 0, BROKER_CARS[i]));
+  [[1, 0], [4, 1], [9, 2], [13, 3], [17, 4], [21, 5]].forEach(([pos, i]) => cars.splice(Math.min(pos, cars.length), 0, BROKER_CARS[i]));
 
   /* ---------- formato ---------- */
   const nf = (v, d = 0) => Number(v).toLocaleString('it-IT', { minimumFractionDigits: d, maximumFractionDigits: d });
