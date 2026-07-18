@@ -15,7 +15,7 @@ window.FLEE_CARS = [
 "advance": 1500,
 "distance": "10000",
 "priceFix": 203,
-"priceFlat": 294.46,
+"priceFlat": 326,
 "priceVariable": 0.15,
 "priceFixDiscount": null,
 "priceFlatDiscount": null,
